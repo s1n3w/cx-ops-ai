@@ -102,6 +102,7 @@ ollama pull qwen3.6:27b
 py -3.12 -m venv .venv
 .venv\Scripts\pip install -r requirements-dev.txt
 
+.venv\Scripts\python -m cxops.app          # interactive menu (or build "CX Ops AI.exe" with launcher\build.bat)
 .venv\Scripts\python -m cxops.triage "How long do password reset links last?" --plan Pro
 .venv\Scripts\python -m cxops.voc --report out/voc-report.md
 

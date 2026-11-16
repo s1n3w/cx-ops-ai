@@ -8,3 +8,6 @@ evals/results/
 
 # Generated reports
 out/
+
+# Built launcher (rebuild with launcheruild.bat)
+*.exe
