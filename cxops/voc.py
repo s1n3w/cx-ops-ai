@@ -38,7 +38,11 @@ follow_up = true when someone at Tallyline should contact this customer:
 - a problem they are still stuck on or waiting for us to fix, or
 - a detractor (score 0-6) with a specific, fixable complaint.
 Otherwise false. Vague complaints with nothing specific to fix ("too expensive", "terrible") are false
-unless they also show a churn signal. Happy customers are false."""
+unless they also show a churn signal. Happy customers are false.
+A feature wish or a general opinion ("needs more report types", "too many clicks", "slower than it used to be",
+"support is hit or miss") is product feedback, not a follow-up, unless the customer also says they're leaving
+or are stuck waiting on us. Follow-ups are for this customer's own unresolved situation: wrong charges, money
+missing, a broken thing blocking their work, an open ticket, or a churn risk."""
 
 
 def tag_messages(resp: dict) -> list[dict]:
@@ -108,7 +112,8 @@ def summary_messages(stats: dict) -> list[dict]:
     facts["follow_up_examples"] = [f["comment"] for f in stats["follow_up"][:8]]
     system = """You write a monthly voice-of-the-customer summary for Tallyline's leadership team.
 Use ONLY the numbers in the data below; do not calculate new numbers (no differences, averages, or percentages
-that aren't given). Write about 200 words of plain Markdown with three short sections:
+that aren't given), and don't claim causes the data doesn't show (e.g. don't say a score rose "because" of
+response volume). Write about 200 words of plain Markdown with three short sections:
 **Headline** (overall NPS and the trend by month), **What's driving detractors** (top themes with counts and
 one or two example problems), and **Recommended actions** (3 bullets, specific and practical)."""
     return [{"role": "system", "content": system},

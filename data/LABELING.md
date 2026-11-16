@@ -56,3 +56,9 @@ ease_of_use, performance, mobile, praise_staff.
 **follow_up**: `true` when someone should contact the customer: a churn signal ("looking at
 other tools", "cancel at renewal"), an unresolved problem the customer is still stuck on, or a
 detractor (0–6) with a specific, fixable complaint. Promoters asking for nothing are `false`.
+
+*Clarified after the analyzer's v1 run (the gold labels didn't change):* "specific, fixable complaint" means
+a problem with this customer's own account or work (wrong charge, missing money, something broken that blocks
+them, an open ticket). Feature wishes and general opinions are product feedback, not follow-ups, unless the
+customer also shows a churn signal or is stuck waiting on us. The v1 wording was loose enough that the model
+read feature wishes as follow-ups, and that reading was fair.
