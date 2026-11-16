@@ -15,6 +15,8 @@ from pathlib import Path
 
 from . import history, taxonomy
 
+DEMO_NOTE = ("Demo data, not real customers: Tallyline is a fictional company made up for this project. Its help "
+             "center, support tickets, and survey responses are all invented for testing.")
 SAVED = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "cx-ops-ai" / "reports.json"
 EXPORT_DIR = Path.home() / "Documents" / "CX Ops AI exports"
 
@@ -246,7 +248,9 @@ def export_xlsx(spec: dict, name: str = "") -> Path:
     ws["A3"] = "Filters: " + (_describe_filters(spec.get("filters") or {}) or "none")
     for c in ("A2", "A3"):
         ws[c].font = Font(italic=True, color="666666")
-    start = 5
+    ws["A4"] = DEMO_NOTE
+    ws["A4"].font = Font(bold=True, color="B5541C")
+    start = 6
     if rep["split"]:
         cols = [rep["group_label"]] + rep["split"]["columns"] + ["Total"]
         ws.cell(start, 1, f"Count by {rep['group_label'].lower()} and {rep['split']['label'].lower()}").font = Font(bold=True)
@@ -321,8 +325,9 @@ def export_xlsx(spec: dict, name: str = "") -> Path:
                  ("Rows", rep["rows"]), ("Group by", rep["group_label"]),
                  ("Split by", rep["split"]["label"] if rep["split"] else "-"),
                  ("Filters", _describe_filters(spec.get("filters") or {}) or "none"),
+                 ("Demo data", DEMO_NOTE),
                  ("Note", "Category and Topic come from CX Ops AI's picklist. 'Topic set by' says whether the AI suggested "
-                          "it or a person chose it. All data stays on this PC; Tallyline is a made-up company.")]:
+                          "it or a person chose it. All data stays on this PC.")]:
         about.append(line)
     about.column_dimensions["A"].width, about.column_dimensions["B"].width = 14, 100
 

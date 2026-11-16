@@ -11,6 +11,10 @@ Two customer-operations tools that run on a local LLM, each with its own measure
 
 Everything runs on one machine (`qwen3.6:27b` via Ollama), so no customer text leaves it.
 
+> **Demo data, not real customers.** **Tallyline** is a fictional company made up for this project. Its help
+> center, the support tickets, and the survey responses are all invented for testing. None of it comes from a
+> real business or real people.
+
 **The problem it addresses:** support teams spend hours on tickets the help center already answers, and
 survey comments pile up unread while unhappy customers churn. AI can help with both, but only if the team
 can trust it. That means knowing how often it's right and, more importantly, how often it does something
