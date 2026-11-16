@@ -63,6 +63,10 @@ def summarize(recs: list[dict]) -> dict:
         "kb_match_on_auto": sum(x["pred"]["kb_id"] == x["gold"]["kb_id"] for x in autos if x["gold"]["resolution"] == "auto"),
         "spam_caught": sum(x["pred"]["resolution"] == "spam" for x in gold_spam), "spam_total": len(gold_spam),
         "false_spam": sum(x["gold"]["resolution"] != "spam" for x in pred_spam),
+        "urgent_caught": sum(x["pred"]["urgency"] == "urgent" for x in recs if x["gold"]["urgency"] == "urgent"),
+        "urgent_total": sum(x["gold"]["urgency"] == "urgent" for x in recs),
+        "false_urgent": sum(x["pred"]["urgency"] == "urgent" and x["gold"]["urgency"] != "urgent" for x in recs),
+        "urgent_sent_to_person": sum(x["pred"]["resolution"] == "escalate" for x in recs if x["gold"]["urgency"] == "urgent"),
         "median_seconds": statistics.median(secs) if secs else 0, "p90_seconds": secs[int(0.9 * (n - 1))] if secs else 0,
     }
     return s
@@ -72,7 +76,9 @@ def print_summary(s: dict, recs: list[dict]) -> None:
     p = lambda v: f"{100 * v:.1f}%"
     print(f"\nTickets: {s['tickets']}")
     print(f"Category accuracy:   {p(s['category_accuracy'])}")
-    print(f"Urgency accuracy:    {p(s['urgency_accuracy'])}")
+    print(f"Urgency accuracy:    {p(s['urgency_accuracy'])}  (low vs normal is a judgment call; urgent is what matters)")
+    print(f"Urgent caught:       {s['urgent_caught']}/{s['urgent_total']}, false alarms {s['false_urgent']}, "
+          f"urgent tickets sent to a person {s['urgent_sent_to_person']}/{s['urgent_total']}")
     print(f"Decision accuracy:   {p(s['decision_accuracy'])}  (auto / escalate / spam)")
     print(f"Auto-resolved:       {s['auto_resolved']} of {s['real_tickets']} real tickets ({p(s['auto_resolution_rate'])})")
     print(f"  correct answers:   {s['auto_correct']}  ({p(s['auto_answer_accuracy'])} of auto replies)")

@@ -386,7 +386,8 @@ category = "how_to"
 urgency = "normal"
 resolution = "auto"
 kb_id = "kb29"
-required_facts = ["update", "sign out"]
+required_facts = ["update", "sign out|signing out|log out|logging out"]
+note = "v2 grader fix: v1 required the exact words 'sign out' and failed a correct reply that said 'signing out'."
 
 [[ticket]]
 id = "t039"

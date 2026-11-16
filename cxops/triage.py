@@ -10,6 +10,7 @@
 Run:  python -m cxops.triage "My QuickBooks sync shows error QBO-401" [--subject ...] [--plan Pro]
 """
 import argparse
+import re
 import sys
 import time
 from dataclasses import dataclass, field
@@ -32,7 +33,11 @@ CATEGORY_HELP = """\
 - integration: QuickBooks, Xero, Google/Outlook calendar, Zapier, the API
 - data_import: importing or exporting data (CSV import, full data export, data requests)
 - cancellation: wants to cancel or close the account
-- spam: not a real support request (sales pitches, SEO/marketing offers, partnership pitches, phishing, scams, gibberish)"""
+- spam: not a real support request (sales pitches, SEO/marketing offers, partnership pitches, phishing, scams, gibberish)
+When two fit, prefer the specific area: a problem with payouts or charges is billing, with sign-in or SSO is access,
+with QuickBooks/Xero/calendars/Zapier/the API is integration, with importing or exporting is data_import, even if
+something is broken or it's a how-to question. Use bug for broken core features (timesheets, timers, invoices,
+reports, the portal, the app being down or slow) and how_to for using those core features."""
 
 URGENCY_HELP = """\
 - urgent: work is stopped for many people; money is moving wrongly (double charges, missing or misdirected payouts);
@@ -137,7 +142,8 @@ def triage(ticket: dict, model: str = llm.DEFAULT_MODEL) -> Triage:
         rep = llm.chat(draft_messages(ticket, data.articles()[c["kb_id"]]), model)
         tokens += rep.prompt_tokens + rep.output_tokens
         text = rep.text.strip()
-        if text.upper().startswith("ESCALATE"):
+        # v2 fix: the model sometimes explains first and says ESCALATE at the end. Never send that.
+        if re.search(r"\bESCALATE\b", text):
             t.why = "the drafted reply declined (article doesn't cover it)"
         else:
             t.resolution, t.reply = "auto", text

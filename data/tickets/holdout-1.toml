@@ -1,0 +1,423 @@
+# Holdout ticket set (h001-h040). Written 2026-11-16 after the v2 changes and BEFORE seeing any v2 results.
+# Scored separately so it can't inflate or hide anything in the core score. See data/LABELING.md.
+
+[[ticket]]
+id = "h001"
+plan = "Pro"
+subject = "reset email never came"
+body = "Requested a password reset like 10 minutes ago, nothing in my inbox. What address does it come from so I can search for it?"
+category = "access"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb01"
+required_facts = ["no-reply@tallyline.com"]
+
+[[ticket]]
+id = "h002"
+plan = "Business"
+subject = "Which identity providers for SSO?"
+body = "We're on Business and use Microsoft Entra. Is that supported for SSO?"
+category = "access"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb04"
+required_facts = ["Entra|Azure AD"]
+
+[[ticket]]
+id = "h003"
+plan = "Pro"
+subject = "Backup codes question"
+body = "How many 2FA backup codes do we get, and can they be reused?"
+category = "access"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb02"
+required_facts = ["10", "once"]
+
+[[ticket]]
+id = "h004"
+plan = "Starter"
+subject = "Charged $57 but plan is $19??"
+body = "My card was charged $57 this month. I'm on Starter at $19. Did you charge me three times? I want this sorted and the extra money back."
+category = "billing"
+urgency = "urgent"
+resolution = "escalate"
+alt_category = []
+
+[[ticket]]
+id = "h005"
+plan = "Pro"
+subject = "What payment methods for our subscription"
+body = "Can we pay for Tallyline with Amex?"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb09"
+required_facts = ["American Express|Amex"]
+
+[[ticket]]
+id = "h006"
+plan = "Pro"
+subject = "Read-only after failed payment - how to fix now"
+body = "Our account went read-only because the card on file was declined. I've got a new card. How do I get full access back today?"
+category = "billing"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb10"
+required_facts = ["Retry payment"]
+
+[[ticket]]
+id = "h007"
+plan = "Business"
+subject = "QuickBooks: invoices only, not payments"
+body = "When we set up QuickBooks, can we sync only invoices and keep payments out of it? Our bookkeeper records deposits separately."
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb14"
+required_facts = ["invoices, payments, or both|invoices or payments|payments, or both|invoices, payments"]
+
+[[ticket]]
+id = "h008"
+plan = "Pro"
+subject = "How often does QuickBooks sync?"
+body = "How long after I create an invoice will it show up in QuickBooks?"
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb14"
+required_facts = ["4 hours|four hours", "Sync now"]
+
+[[ticket]]
+id = "h009"
+plan = "Business"
+subject = "API down for everyone?"
+body = "Every API call from our three integrations is returning 503 since 10:40 this morning. Our client billing automation is completely stopped."
+category = "integration"
+urgency = "urgent"
+resolution = "escalate"
+alt_category = ["bug"]
+
+[[ticket]]
+id = "h010"
+plan = "Pro"
+subject = "Exclusive offer for Tallyline users"
+body = "As a Tallyline user you qualify for our premium bookkeeping outsourcing at 50% off for 3 months. Book a call at the link below."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "h011"
+plan = "Starter"
+subject = "Upgrade to get recurring invoices"
+body = "If I upgrade to Pro today to get recurring invoices, do I get them right away and how is it charged?"
+category = "billing"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb08"
+required_facts = ["immediately|right away|right now|immediate", "prorated"]
+
+[[ticket]]
+id = "h012"
+plan = "Pro"
+subject = "Invoices stuck as drafts"
+body = "My recurring invoices are being created as drafts and not sending. I want them to go out on their own. Is that a setting?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb22"
+required_facts = ["draft"]
+
+[[ticket]]
+id = "h013"
+plan = "Pro"
+subject = "Timesheet approvals period"
+body = "Can we do approvals twice a month instead of weekly?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb30"
+required_facts = ["twice-monthly|twice monthly|twice a month"]
+
+[[ticket]]
+id = "h014"
+plan = "Business"
+subject = "Clients see other firms' invoices"
+body = "A client just called saying when she logged into our portal she saw invoices addressed to a different firm, not ours. Screenshot attached. This is a huge problem."
+category = "bug"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "h015"
+plan = "Pro"
+subject = "pay invoices via bank transfer"
+body = "Can my clients pay by bank transfer instead of card through the Pay now button?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb19"
+required_facts = ["ACH|bank transfer"]
+
+[[ticket]]
+id = "h016"
+plan = "Starter"
+subject = "Cancel please"
+body = "Not using it anymore. Please cancel my subscription."
+category = "cancellation"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "h017"
+plan = "Pro"
+subject = "Tax summary for filing"
+body = "My accountant asked for a report of sales tax collected last quarter. Where do I find that?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb23"
+required_facts = ["Tax summary"]
+
+[[ticket]]
+id = "h018"
+plan = "Pro"
+subject = "Expenses not appearing on invoice"
+body = "I logged $240 in court filing fees as an expense but it isn't on the client's new invoice. What am I missing?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb34"
+required_facts = ["billable"]
+
+[[ticket]]
+id = "h019"
+plan = "Business"
+subject = "Need someone to call me about pricing for 3 offices"
+body = "We're consolidating three offices onto Tallyline, about 110 users. I'd like to talk to someone about enterprise pricing and a migration plan."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "h020"
+plan = "Pro"
+subject = "Reports show $0 cost"
+body = "Our profitability by client shows $0 cost for everyone. Revenue looks right."
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb31"
+required_facts = ["cost rate"]
+
+[[ticket]]
+id = "h021"
+plan = "Starter"
+subject = "URGENT: verify your Tallyline account"
+body = "Tallyline Security: unusual activity was detected. Verify your identity within 12 hours at tallyline-secure-verify.com or your account will be closed."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "h022"
+plan = "Pro"
+subject = "Delete my employee's data"
+body = "A former employee asked us to delete all their personal information from our systems, including Tallyline. Can you permanently delete their user and time entries?"
+category = "access"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["data_import"]
+note = "Removing a user keeps their time entries (kb05); permanent deletion needs staff."
+
+[[ticket]]
+id = "h023"
+plan = "Pro"
+subject = "Calendar sync for whole team?"
+body = "Can I as the admin connect everyone's calendars at once, or does each person do it?"
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb17"
+required_facts = ["Profile > Calendar sync|each user|each person|their own"]
+
+[[ticket]]
+id = "h024"
+plan = "Business"
+subject = "Late fees charged twice"
+body = "Clients are being charged the late fee twice on the same invoice, once at 7 days and again at 14. We only want it once. Two clients have complained."
+category = "bug"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["how_to"]
+note = "The article says late fees are added when a reminder goes out; whether the double fee is a setting or a defect needs a person."
+
+[[ticket]]
+id = "h025"
+plan = "Pro"
+subject = "Feature request: client-facing time reports"
+body = "Our clients ask for a breakdown of hours each month. A shareable client report would be great."
+category = "feature_request"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb32"
+required_facts = ["ideas.tallyline.com"]
+
+[[ticket]]
+id = "h026"
+plan = "Pro"
+subject = "Can't log in on new iPhone"
+body = "Got a new iPhone 16, installed Tallyline, signs in then kicks me back out to the login screen."
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb29"
+required_facts = ["update"]
+alt_category = ["access"]
+
+[[ticket]]
+id = "h027"
+plan = "Business"
+subject = "Lost all my time this week??"
+body = "My timesheet for this week is completely blank. I logged about 38 hours Monday to Thursday. Please tell me it's recoverable, I have to bill these."
+category = "bug"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "h028"
+plan = "Pro"
+subject = "Xero setup"
+body = "How do I connect Xero?"
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb16"
+required_facts = ["Settings > Integrations > Xero|Integrations"]
+
+[[ticket]]
+id = "h029"
+plan = "Starter"
+subject = "We'd like to be a reseller"
+body = "Hi, we're an IT consultancy and want to resell Tallyline to our clients for a margin. Who handles partner agreements? Here is our brochure."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+alt_category = []
+
+[[ticket]]
+id = "h030"
+plan = "Pro"
+subject = "Invite expiration"
+body = "How long do user invitations stay valid?"
+category = "access"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb05"
+required_facts = ["7 days|seven days"]
+
+[[ticket]]
+id = "h031"
+plan = "Pro"
+subject = "Annual plan refund within 30 days"
+body = "We switched to annual 3 weeks ago but are closing the business. Your site says annual plans are refundable in 30 days, so please process it."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["cancellation"]
+
+[[ticket]]
+id = "h032"
+plan = "Pro"
+subject = "Import dates"
+body = "What date format does the time entry import want? My file has 15/03/2026."
+category = "data_import"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb27"
+required_facts = ["YYYY-MM-DD"]
+
+[[ticket]]
+id = "h033"
+plan = "Business"
+subject = "Where do I see if a client opened the invoice?"
+body = "Is there a way to tell if a client opened the invoice email?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb26"
+required_facts = ["Activity"]
+
+[[ticket]]
+id = "h034"
+plan = "Pro"
+subject = "Your support is terrible and also how do I add a tax rate"
+body = "I've been waiting two days for a reply on a different ticket, which is ridiculous. Anyway, separately: where do I add a new tax rate?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb23"
+required_facts = ["Settings > Invoices > Taxes|Taxes"]
+note = "Frustrated, but the only question in this ticket is answered by one article."
+
+[[ticket]]
+id = "h035"
+plan = "Business"
+subject = "Payout delayed"
+body = "Payouts usually arrive in 2 days but a $9,300 payment from last Monday still hasn't arrived and it's Friday. Can you check?"
+category = "billing"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "h036"
+plan = "Starter"
+subject = "Portal on my own domain"
+body = "Can I put the client portal on my own web address? I'm on Starter."
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb25"
+required_facts = ["Business"]
+
+[[ticket]]
+id = "h037"
+plan = "Pro"
+subject = "Maintenance alerts"
+body = "Can I get a text when Tallyline has an incident? We had no idea last time."
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb33"
+required_facts = ["Subscribe"]
+
+[[ticket]]
+id = "h038"
+plan = "Business"
+subject = "Subpoena for records"
+body = "We've received a subpoena requiring records of time entries and invoices for one of our clients. Can Tallyline provide certified copies of records and system logs?"
+category = "data_import"
+urgency = "urgent"
+resolution = "escalate"
+alt_category = ["how_to"]
+
+[[ticket]]
+id = "h039"
+plan = "Pro"
+subject = "API on Pro"
+body = "I want to build a small script that pulls invoices. Do I have API access on Pro?"
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb18"
+required_facts = ["Business"]
+
+[[ticket]]
+id = "h040"
+plan = "Pro"
+subject = "Downgrade and refund difference"
+body = "We want to drop from Pro to Starter right now and get refunded the difference for the rest of this month."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
