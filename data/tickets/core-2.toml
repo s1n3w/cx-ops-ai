@@ -1,0 +1,829 @@
+# Core ticket set, part 2 (t081-t160). Written 2026-11-16 before any model run. See data/LABELING.md.
+
+[[ticket]]
+id = "t081"
+plan = "Pro"
+subject = "Re: Re: password"
+body = "Hi again. I asked for a reset link three times and none of them work. Is it because I keep asking for new ones? Also nothing came for 10 min the first time."
+category = "access"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb01"
+required_facts = ["cancels|cancel|invalidates|replaces|only the latest|most recent|newest"]
+
+[[ticket]]
+id = "t082"
+plan = "Starter"
+subject = "how much"
+body = "what do the plans cost? just me and one assistant"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb07"
+required_facts = ["$19", "$39", "$59"]
+
+[[ticket]]
+id = "t083"
+plan = "Pro"
+subject = "Clients see wrong logo"
+body = "We rebranded and uploaded a new logo but the invoices still show the old one. Where's the template setting?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb21"
+required_facts = ["Templates"]
+
+[[ticket]]
+id = "t084"
+plan = "Business"
+subject = "Payments to wrong bank account"
+body = "We changed our bank last month and updated it in Tallyline, but yesterday's $12,000 in payouts went to the old closed account. We need this traced immediately."
+category = "billing"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t085"
+plan = "Pro"
+subject = "Can't see the timer on iPhone"
+body = "My assistant has an older iPhone on iOS 15 and the Tallyline app won't install. Which versions do you support?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb29"
+required_facts = ["iOS 16"]
+
+[[ticket]]
+id = "t086"
+plan = "Pro"
+subject = "Timer lost when offline?"
+body = "I do site visits with no signal. If I start a timer on the app and lose service, will the time be lost?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb29"
+required_facts = ["offline|without a connection|no signal|without service", "sync"]
+
+[[ticket]]
+id = "t087"
+plan = "Business"
+subject = "Exports link expired"
+body = "We requested a full data export last week for our auditors but by the time they clicked the link it said expired. How long does the link last? Can we request another?"
+category = "data_import"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb28"
+required_facts = ["7 days|seven days"]
+
+[[ticket]]
+id = "t088"
+plan = "Pro"
+subject = "Win a free iPad!"
+body = "Congratulations! Your email was selected in our quarterly customer draw. Claim your iPad Pro by confirming your shipping address and a small $4.95 handling fee here."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t089"
+plan = "Pro"
+subject = "Utilization report"
+body = "Is there a report that shows billable hours vs available hours for each person?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb31"
+required_facts = ["Utilization"]
+
+[[ticket]]
+id = "t090"
+plan = "Business"
+subject = "Cancel at renewal + data export"
+body = "Our firm is being acquired and we'll move to the parent company's system. Please cancel at our renewal in January and confirm we can still export everything after that."
+category = "cancellation"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t091"
+plan = "Starter"
+subject = "This app is garbage"
+body = "Third time this week the invoice editor froze and I lost a whole invoice I was typing. I'm so done. Fix your product."
+category = "bug"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t092"
+plan = "Pro"
+subject = "ACH fees"
+body = "What do you charge when a client pays by bank transfer instead of card? Our invoices are big, like $8-15K."
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb20"
+required_facts = ["1%", "$10"]
+
+[[ticket]]
+id = "t093"
+plan = "Pro"
+subject = "Can I pay annually?"
+body = "We'd like to switch from monthly billing to annual to save money. And can we pay by ACH instead of card for that?"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb09"
+required_facts = ["invoice|ACH"]
+
+[[ticket]]
+id = "t094"
+plan = "Business"
+subject = "Request: SOC 2 report"
+body = "Our compliance team needs your most recent SOC 2 Type II report and a signed NDA before renewal. Who can send that?"
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["how_to"]
+
+[[ticket]]
+id = "t095"
+plan = "Pro"
+subject = "Zapier"
+body = "Is there a Zapier integration? I want new clients from our web form to show up in Tallyline. We're on Pro."
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb18"
+required_facts = ["Zapier"]
+
+[[ticket]]
+id = "t096"
+plan = "Pro"
+subject = "Outlook calendar"
+body = "Does the calendar sync work with Outlook? And will it log my meetings as time automatically? I don't want internal meetings billed."
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb17"
+required_facts = ["Outlook", "accept"]
+
+[[ticket]]
+id = "t097"
+plan = "Starter"
+subject = "Re: your proposal"
+body = "Hi, following up on the proposal I sent your team about our virtual assistant services. We can take your inbox off your hands for $8/hr. When can we talk?"
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t098"
+plan = "Pro"
+subject = "Clients can't log into portal"
+body = "Two clients say the portal sign-in email never comes. I can see them invited on the client page. They use Outlook."
+category = "how_to"
+urgency = "normal"
+resolution = "escalate"
+note = "No article covers portal magic-link emails not arriving; the deliverability article is about invoice emails. Needs investigation."
+
+[[ticket]]
+id = "t099"
+plan = "Pro"
+subject = "Delete a client?"
+body = "I created a duplicate client by mistake. How do I delete it?"
+category = "how_to"
+urgency = "low"
+resolution = "escalate"
+note = "No help article covers deleting clients."
+
+[[ticket]]
+id = "t100"
+plan = "Business"
+subject = "Audit log"
+body = "Our auditors asked whether Tallyline keeps an audit log of who changed invoices. Do we have that on Business?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb07"
+required_facts = ["audit log"]
+
+[[ticket]]
+id = "t101"
+plan = "Pro"
+subject = "Overdue reminder schedule"
+body = "When do the automatic payment reminders go out? I want to tell clients in our engagement letters."
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb21"
+required_facts = ["7", "14", "30"]
+
+[[ticket]]
+id = "t102"
+plan = "Pro"
+subject = "Charged after I cancelled"
+body = "I cancelled in August and you charged my card $39 again on Nov 1. I want that refunded and confirmation nothing else will be charged."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t103"
+plan = "Pro"
+subject = "multi-currency"
+body = "We just signed a client in Canada. Can I invoice them in CAD? How?"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb24"
+required_facts = ["Billing currency"]
+
+[[ticket]]
+id = "t104"
+plan = "Starter"
+subject = "invoice in euros"
+body = "can I send an invoice in euros on the starter plan?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb24"
+required_facts = ["Pro"]
+
+[[ticket]]
+id = "t105"
+plan = "Business"
+subject = "Slow!!!"
+body = "Everything has been super slow this week. Pages take 10-15 seconds to load. Is it us or you?"
+category = "bug"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t106"
+plan = "Pro"
+subject = "Add a user"
+body = "We hired someone. How do I add her, and will we be charged right away?"
+category = "access"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb05"
+required_facts = ["Invite user", "prorated"]
+
+[[ticket]]
+id = "t107"
+plan = "Pro"
+subject = "Feature idea: Slack notifications"
+body = "It would be great if Tallyline could post to Slack when a client pays an invoice. Any plans?"
+category = "feature_request"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb32"
+required_facts = ["ideas.tallyline.com"]
+
+[[ticket]]
+id = "t108"
+plan = "Business"
+subject = "Account suspended?"
+body = "We just got an email saying our account will be read-only because payment failed, but our card is fine and has plenty of room. We have 45 people who need to log time today."
+category = "billing"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t109"
+plan = "Pro"
+subject = "Your domain is expiring"
+body = "NOTICE: The domain tallyline.com is set to expire. Renew now at our registrar partner to avoid losing your website and email: domain-renewal-services.org/renew"
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t110"
+plan = "Pro"
+subject = "QuickBooks invoice numbers"
+body = "Getting QBO-6000 on some invoices. Our numbering in Tallyline restarted at 1001 this year."
+category = "integration"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb15"
+required_facts = ["duplicate", "Let QuickBooks number invoices"]
+
+[[ticket]]
+id = "t111"
+plan = "Starter"
+subject = "Connect QuickBooks Online"
+body = "How do I connect QuickBooks Online? I'm not the QuickBooks admin, our bookkeeper is. Does that matter?"
+category = "integration"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb14"
+required_facts = ["admin"]
+
+[[ticket]]
+id = "t112"
+plan = "Business"
+subject = "Okta SSO broken"
+body = "Since this morning everyone who signs in through Okta gets 'SAML response invalid'. We didn't change anything in Okta. Nobody on the team can work."
+category = "access"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t113"
+plan = "Pro"
+subject = "Late fee percent"
+body = "Can the late fee be 1.5% instead of a flat amount?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb21"
+required_facts = ["percentage|percent"]
+
+[[ticket]]
+id = "t114"
+plan = "Pro"
+subject = "Wrong hours on invoice"
+body = "Invoice INV-2207 pulled in 37.5 hours but the timesheet for that project shows 32.5 for the period. Something is double counting."
+category = "bug"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t115"
+plan = "Starter"
+subject = "Can't create invoice in app"
+body = "I'm on the mobile app and can't find where to create an invoice. Is it under a menu?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb29"
+required_facts = ["yet|can't create invoices|cannot create invoices|not able to create invoices|isn't available|not available"]
+
+[[ticket]]
+id = "t116"
+plan = "Business"
+subject = "Need help with taxes on 40 clients and also our renewal quote and also SSO"
+body = "A few things: we need to set up a new tax rate across 40 existing clients, get a renewal quote for next year with 10 more seats, and our new hires can't get through SSO. Can someone call me?"
+category = "access"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["billing", "how_to"]
+
+[[ticket]]
+id = "t117"
+plan = "Pro"
+subject = "Payout timing"
+body = "Client paid by card this morning. When will it hit my bank?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb20"
+required_facts = ["2 business days|two business days"]
+
+[[ticket]]
+id = "t118"
+plan = "Pro"
+subject = "Increase your Google reviews"
+body = "Businesses with 50+ Google reviews get 3x more leads. We'll get you 50 five-star reviews in 30 days, guaranteed. Packages from $299."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t119"
+plan = "Pro"
+subject = "Where do I see payouts"
+body = "Is there a page listing all the payouts to our bank so I can reconcile?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb20"
+required_facts = ["Payouts"]
+
+[[ticket]]
+id = "t120"
+plan = "Business"
+subject = "We're leaving"
+body = "After the outages this quarter the partners voted to move to another platform. Cancel effective at the end of our term and tell me how we get our data out."
+category = "cancellation"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t121"
+plan = "Pro"
+subject = "Can't edit an invoice after QuickBooks sync"
+body = "Is it normal that invoices can't be edited once they sync to QuickBooks? Help article doesn't say."
+category = "integration"
+urgency = "normal"
+resolution = "escalate"
+note = "Not covered by any article."
+
+[[ticket]]
+id = "t122"
+plan = "Starter"
+subject = "please help!!! urgent!!!"
+body = "how do i change the color on my invoices?? URGENT client meeting tomorrow"
+category = "how_to"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb21"
+required_facts = ["Templates"]
+note = "Shouted 'urgent' but by the guide it's a how-to with no outage, money, security, or legal issue."
+
+[[ticket]]
+id = "t123"
+plan = "Pro"
+subject = "Export a report to PDF"
+body = "Can I export the profitability report as a PDF for our partners meeting?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb31"
+required_facts = ["PDF"]
+
+[[ticket]]
+id = "t124"
+plan = "Business"
+subject = "Who changed this invoice?"
+body = "An invoice total changed from $9,000 to $900 and was sent to the client. Nobody admits to it. We need to know who did this; it might be fraud."
+category = "access"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t125"
+plan = "Pro"
+subject = "Expense receipt photos"
+body = "Can my team attach receipt photos to expenses from their phones?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb34"
+required_facts = ["receipt"]
+
+[[ticket]]
+id = "t126"
+plan = "Pro"
+subject = "Billing email"
+body = "Receipts go to my email but our bookkeeper needs them too. Can you add her?"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb11"
+required_facts = ["billing email|Receipt details"]
+
+[[ticket]]
+id = "t127"
+plan = "Starter"
+subject = "WORK FROM HOME $500/day"
+body = "Earn $500 per day from home with our proven system!!! No experience needed. Limited spots. Click below to start."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t128"
+plan = "Business"
+subject = "SSO - can owners still use password?"
+body = "If we turn on SSO and our identity provider goes down, is there any way to get in?"
+category = "access"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb04"
+required_facts = ["owner"]
+
+[[ticket]]
+id = "t129"
+plan = "Pro"
+subject = "Reminder emails to clients sending twice"
+body = "Clients are getting each overdue reminder email two times, a few minutes apart. Started this week."
+category = "bug"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t130"
+plan = "Pro"
+subject = "Calendar events billed?"
+body = "Will connecting my Google Calendar automatically create time entries for every meeting? I don't want that."
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb17"
+required_facts = ["accept"]
+
+[[ticket]]
+id = "t131"
+plan = "Business"
+subject = "Our entire client list was emailed to everyone"
+body = "One of our clients forwarded us an email from your portal that listed OTHER clients' names and invoice amounts. This is a serious confidentiality breach for a law firm. Call me now."
+category = "bug"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t132"
+plan = "Pro"
+subject = "Time zone of recurring invoices"
+body = "We moved our office from Denver to Chicago. Do recurring invoices follow the account's time zone?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb22"
+required_facts = ["time zone"]
+
+[[ticket]]
+id = "t133"
+plan = "Starter"
+subject = "Can I get SSO if I upgrade?"
+body = "If I go to Pro will I get SSO?"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb07"
+required_facts = ["Business"]
+alt_category = ["access"]
+
+[[ticket]]
+id = "t134"
+plan = "Pro"
+subject = "Reject timesheet"
+body = "As a manager, can I send a timesheet back to someone to fix rather than approve it?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb30"
+required_facts = ["reject"]
+
+[[ticket]]
+id = "t135"
+plan = "Pro"
+subject = "Import clients"
+body = "Is there a template for importing clients?"
+category = "data_import"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb27"
+required_facts = ["template"]
+
+[[ticket]]
+id = "t136"
+plan = "Business"
+subject = "Undo an import"
+body = "Is there a way to undo a CSV import? I'm about to import 8,000 rows and nervous."
+category = "data_import"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb27"
+required_facts = ["can't be undone|cannot be undone|can not be undone|not be undone|no undo|irreversible", "small"]
+
+[[ticket]]
+id = "t137"
+plan = "Pro"
+subject = "Annual plan discount"
+body = "How much do we save going annual?"
+category = "billing"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb07"
+required_facts = ["15%"]
+
+[[ticket]]
+id = "t138"
+plan = "Starter"
+subject = "Hello"
+body = "Hello dear, I am Mrs. Grace from Lagos and I have an important business proposal of $4.5M USD inheritance that I need a trustworthy partner for. Please reply with your full name and phone."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t139"
+plan = "Pro"
+subject = "Payment failed - what happens"
+body = "Got an email that our payment failed. What happens now? Will we lose access?"
+category = "billing"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb10"
+required_facts = ["3 times|three times", "read-only|read only"]
+
+[[ticket]]
+id = "t140"
+plan = "Pro"
+subject = "Integrate with Clio please"
+body = "Most of our attorney clients use Clio. An integration would be huge for us. Upvoting wherever I can."
+category = "feature_request"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb32"
+required_facts = ["ideas.tallyline.com"]
+
+[[ticket]]
+id = "t141"
+plan = "Business"
+subject = "API returning 500 errors"
+body = "Since 2pm our calls to GET /v1/time_entries return HTTP 500 about half the time. Other endpoints are fine. Our payroll export depends on this tonight."
+category = "integration"
+urgency = "urgent"
+resolution = "escalate"
+
+[[ticket]]
+id = "t142"
+plan = "Pro"
+subject = "SAML on Pro?"
+body = "Hi, our IT person says we need SAML. Do we get it on Pro or do we need to upgrade?"
+category = "access"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb04"
+required_facts = ["Business"]
+alt_category = ["billing"]
+
+[[ticket]]
+id = "t143"
+plan = "Pro"
+subject = "Stuck on Stripe verification"
+body = "It's been 9 business days since I submitted the payments setup and it still says pending verification. Nobody has contacted us."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["how_to"]
+
+[[ticket]]
+id = "t144"
+plan = "Starter"
+subject = "how do i log time on my phone"
+body = "is there an app?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb29"
+required_facts = ["iOS", "Android"]
+
+[[ticket]]
+id = "t145"
+plan = "Pro"
+subject = "Xero tax mapping"
+body = "When we connect Xero, how do our Tallyline tax rates map over? Our Xero file has GST rates set up."
+category = "integration"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb16"
+required_facts = ["tax rates"]
+
+[[ticket]]
+id = "t146"
+plan = "Business"
+subject = "Sender domain DNS"
+body = "We added SPF and DKIM for our sender domain three days ago but Tallyline still says 'not verified'. Our DNS checker shows the records are live."
+category = "how_to"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["bug"]
+note = "The article only says to add the records; verification failing after that needs a human."
+
+[[ticket]]
+id = "t147"
+plan = "Pro"
+subject = "billing - downgrade to save money"
+body = "Times are tight. If we drop from Pro to Starter, what do we lose? We use recurring invoices a lot."
+category = "billing"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb07"
+required_facts = ["recurring"]
+
+[[ticket]]
+id = "t148"
+plan = "Pro"
+subject = "You've been hacked"
+body = "I have access to your computer and recorded you. Send $1,200 in Bitcoin to the wallet below within 48 hours or I share everything with your contacts."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t149"
+plan = "Pro"
+subject = "Invite clients to portal"
+body = "How do I give a client access to the portal so they can see their invoices?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb25"
+required_facts = ["Invite to portal"]
+
+[[ticket]]
+id = "t150"
+plan = "Business"
+subject = "Merge two client records"
+body = "We have the same client entered twice with different spellings and invoices on both. Can you merge them?"
+category = "how_to"
+urgency = "normal"
+resolution = "escalate"
+note = "No article covers merging; needs staff."
+
+[[ticket]]
+id = "t151"
+plan = "Pro"
+subject = "Stopped getting backup codes"
+body = "I used all 10 of my 2FA backup codes. Can I get new ones?"
+category = "access"
+urgency = "low"
+resolution = "escalate"
+note = "No article explains generating new backup codes."
+
+[[ticket]]
+id = "t152"
+plan = "Starter"
+subject = "Account locked + payment"
+body = "My card expired, so the account went read-only, and I also can't remember my password now. Help with both please."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+alt_category = ["access"]
+
+[[ticket]]
+id = "t153"
+plan = "Pro"
+subject = "Customer service is useless"
+body = "Waited 4 days for a reply about my QuickBooks sync. Still broken. QBO-401 error. Do I need to do something?"
+category = "integration"
+urgency = "normal"
+resolution = "auto"
+kb_id = "kb15"
+required_facts = ["Reconnect"]
+note = "Angry, but the ask is answered by one article."
+
+[[ticket]]
+id = "t154"
+plan = "Business"
+subject = "Data residency"
+body = "Our Canadian clients require that their data be stored in Canada. Where is Tallyline data hosted, and can we choose the region?"
+category = "how_to"
+urgency = "normal"
+resolution = "escalate"
+note = "Not covered by any article; compliance question."
+
+[[ticket]]
+id = "t155"
+plan = "Pro"
+subject = "Who can export data?"
+body = "Can a regular user export all our data, or only admins? Worried about staff leaving with our client list."
+category = "data_import"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb28"
+required_facts = ["admin"]
+
+[[ticket]]
+id = "t156"
+plan = "Pro"
+subject = "Free trial extension?"
+body = "We're on day 13 of the trial and haven't finished testing because of tax season. Could you extend it two weeks?"
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t157"
+plan = "Starter"
+subject = "Your Tallyline review"
+body = "Hi! We're a software review site. Your Tallyline listing is unclaimed. Claim it for $99/mo to respond to reviews and get a verified badge."
+category = "spam"
+urgency = "low"
+resolution = "spam"
+
+[[ticket]]
+id = "t158"
+plan = "Pro"
+subject = "Mileage entries"
+body = "When my staff log mileage, how is the dollar amount calculated?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb34"
+required_facts = ["rate"]
+
+[[ticket]]
+id = "t159"
+plan = "Business"
+subject = "Cancel 20 seats"
+body = "We're laying off part of the team. Please remove 20 seats from our plan effective immediately and refund the unused time."
+category = "billing"
+urgency = "normal"
+resolution = "escalate"
+
+[[ticket]]
+id = "t160"
+plan = "Pro"
+subject = "Reports export CSV"
+body = "Can I get the utilization numbers out as a CSV to put in Excel?"
+category = "how_to"
+urgency = "low"
+resolution = "auto"
+kb_id = "kb31"
+required_facts = ["CSV"]

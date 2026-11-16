@@ -1,0 +1,311 @@
+# Tallyline help center (fictional). One [[article]] per page.
+
+[[article]]
+id = "kb01"
+title = "Reset your password"
+body = """
+On the sign-in page, click "Forgot password?" and enter your work email. We email a reset link that
+expires after 60 minutes. If the email doesn't arrive within 5 minutes, check your spam folder for
+mail from no-reply@tallyline.com, then request a new link. Each new link cancels the old one.
+After 5 failed sign-in attempts your account locks for 15 minutes; a password reset unlocks it right away.
+"""
+
+[[article]]
+id = "kb02"
+title = "Turn on two-factor authentication (2FA)"
+body = """
+Go to Settings > Security > Two-factor authentication and click Enable. Scan the QR code with an
+authenticator app (Google Authenticator, Microsoft Authenticator, Authy, or 1Password), then enter the
+6-digit code. Save the 10 backup codes somewhere safe; each one works once. Account owners can require
+2FA for everyone under Settings > Security > Require 2FA.
+"""
+
+[[article]]
+id = "kb03"
+title = "Lost your 2FA device"
+body = """
+Sign in with one of your 10 backup codes in place of the 6-digit code. If you don't have a backup code,
+ask an admin on your account to reset your 2FA under Settings > Users > (your name) > Reset 2FA. You'll
+set it up again at your next sign-in. If you are the only admin, Tallyline support must verify your
+identity before resetting it.
+"""
+
+[[article]]
+id = "kb04"
+title = "Single sign-on (SAML SSO)"
+body = """
+SSO is available on the Business plan. Go to Settings > Security > Single sign-on and enter your identity
+provider's metadata URL. Tallyline supports Okta, Microsoft Entra ID (Azure AD), and Google Workspace.
+Once SSO is on, users sign in through your identity provider; owners can still use a password as a backup.
+"""
+
+[[article]]
+id = "kb05"
+title = "Invite or remove users"
+body = """
+Admins invite people from Settings > Users > Invite user. Invitations expire after 7 days; you can resend
+them from the same page. Each active user is a paid seat. Adding a seat mid-cycle is charged a prorated
+amount. When you remove a user, their time entries stay, and the seat comes off your bill at the next
+billing date.
+"""
+
+[[article]]
+id = "kb06"
+title = "Transfer account ownership"
+body = """
+Only the current owner can transfer ownership. Go to Settings > Account > Transfer ownership and choose an
+existing admin. The new owner gets billing control and the old owner becomes an admin. If the owner has
+left your company and can't do this, Tallyline support must verify the request.
+"""
+
+[[article]]
+id = "kb07"
+title = "Plans and pricing"
+body = """
+Starter is $19 per user per month, Pro is $39, and Business is $59. Paying annually saves 15%.
+Pro adds multi-currency, recurring invoices, and timesheet approvals. Business adds SSO, a custom
+client-portal domain, a custom invoice sender domain, the API, and the audit log.
+"""
+
+[[article]]
+id = "kb08"
+title = "Change your plan"
+body = """
+Owners change plans under Settings > Billing > Change plan. Upgrades take effect immediately and you pay a
+prorated amount for the rest of the cycle. Downgrades take effect at the end of the current billing cycle,
+and features not in the new plan turn off on that date.
+"""
+
+[[article]]
+id = "kb09"
+title = "Update your payment method"
+body = """
+Owners update the card under Settings > Billing > Payment method. We accept Visa, Mastercard, American
+Express, and Discover. Annual plans can also pay by invoice (ACH). The new card is used for the next charge;
+to retry a failed charge right away, click Retry payment on the same page.
+"""
+
+[[article]]
+id = "kb10"
+title = "Failed subscription payments"
+body = """
+If a charge fails, we email the owner and retry it 3 times over 7 days. After the third failure the account
+becomes read-only: you can view and export data but not create invoices or log time. Update your card under
+Settings > Billing > Payment method and click Retry payment to restore full access immediately.
+"""
+
+[[article]]
+id = "kb11"
+title = "Download subscription receipts"
+body = """
+Receipts for your Tallyline subscription are under Settings > Billing > Billing history. Click any charge to
+download a PDF. To add your company's address or VAT number to future receipts, edit Settings > Billing >
+Receipt details. Receipts are emailed to the owner, and you can add one more billing email on that page.
+"""
+
+[[article]]
+id = "kb12"
+title = "Refund policy"
+body = """
+Annual plans can be refunded in full within 30 days of purchase. Monthly plans aren't refunded, but you can
+cancel any time and keep access until the end of the month. The billing team reviews every refund request,
+including charges you believe were made in error.
+"""
+
+[[article]]
+id = "kb13"
+title = "Cancel your subscription"
+body = """
+The owner can cancel under Settings > Billing > Cancel subscription. Your account stays active until the end
+of the paid period, then becomes read-only for 90 days so you can export data. After 90 days the data is
+deleted.
+"""
+
+[[article]]
+id = "kb14"
+title = "Connect QuickBooks Online"
+body = """
+Go to Settings > Integrations > QuickBooks Online and click Connect, then sign in to Intuit as a QuickBooks
+admin. Choose whether Tallyline sends invoices, payments, or both. Clients are matched by name; unmatched
+clients are created in QuickBooks. Sync runs every 4 hours, or click Sync now. QuickBooks Desktop isn't supported.
+"""
+
+[[article]]
+id = "kb15"
+title = "QuickBooks sync errors"
+body = """
+Error QBO-401 means the connection expired: go to Settings > Integrations > QuickBooks Online, click Reconnect,
+and sign in again. Error QBO-610 means the customer or item was deleted or made inactive in QuickBooks: restore
+it there, then click Sync now. Error QBO-6000 means a duplicate invoice number: change the number in Tallyline
+or turn on "Let QuickBooks number invoices".
+"""
+
+[[article]]
+id = "kb16"
+title = "Connect Xero"
+body = """
+Go to Settings > Integrations > Xero and click Connect, then approve access in Xero. Invoices and payments sync
+every 4 hours, or click Sync now. Taxes map to Xero tax rates you choose during setup. If sync stops, click
+Reconnect; Xero connections expire after 60 days without use.
+"""
+
+[[article]]
+id = "kb17"
+title = "Sync with Google or Outlook Calendar"
+body = """
+Each user connects their own calendar under Profile > Calendar sync and picks Google Calendar or Outlook.
+Calendar events appear as suggested time entries in the timesheet; nothing is logged until you accept them.
+Events marked private or all-day are skipped.
+"""
+
+[[article]]
+id = "kb18"
+title = "Zapier and the Tallyline API"
+body = """
+The Zapier app works on every plan: search for Tallyline in Zapier and sign in. The REST API is on the
+Business plan only. Create API keys under Settings > Developer > API keys. The limit is 120 requests per
+minute per key; requests over the limit get HTTP 429.
+"""
+
+[[article]]
+id = "kb19"
+title = "Set up Tallyline Payments"
+body = """
+Tallyline Payments lets clients pay invoices by card or bank transfer (ACH). Go to Settings > Payments >
+Set up and complete Stripe's identity check with your business details and bank account. Approval usually
+takes 1 to 2 business days. After that, a Pay now button appears on every invoice.
+"""
+
+[[article]]
+id = "kb20"
+title = "Payouts and processing fees"
+body = """
+Card payments cost 2.9% + 30 cents. ACH payments cost 1%, capped at $10. Payouts reach your bank account
+2 business days after the client pays. See every payout under Payments > Payouts. Fees can't be passed to
+clients automatically, but you can add a surcharge line to an invoice.
+"""
+
+[[article]]
+id = "kb21"
+title = "Invoice templates and payment reminders"
+body = """
+Edit templates under Settings > Invoices > Templates: logo, colors, terms, and footer. Automatic reminders are
+under Settings > Invoices > Reminders; you can send them 7, 14, and 30 days after the due date. Late fees can be
+a flat amount or a percentage and are added when a reminder goes out.
+"""
+
+[[article]]
+id = "kb22"
+title = "Recurring invoices"
+body = """
+Recurring invoices are on Pro and Business. Open an invoice and click Make recurring, then choose weekly,
+monthly, quarterly, or yearly and an end date. Recurring invoices are created at 6 a.m. in your account's
+time zone and can be sent automatically or saved as drafts for review.
+"""
+
+[[article]]
+id = "kb23"
+title = "Sales tax on invoices"
+body = """
+Add tax rates under Settings > Invoices > Taxes. Each line item can use up to two tax rates (for example,
+state and city). Set a default rate for new invoices on the same page. Tallyline doesn't file taxes; use
+Reports > Tax summary for your filing.
+"""
+
+[[article]]
+id = "kb24"
+title = "Invoice in another currency"
+body = """
+Multi-currency is on Pro and Business. Set a client's currency on the client's page under Billing currency.
+Invoices to that client use that currency. Reports convert to your home currency using the exchange rate
+on the invoice date. A client's currency can't change once they have a paid invoice.
+"""
+
+[[article]]
+id = "kb25"
+title = "Client portal"
+body = """
+Clients view and pay invoices in the client portal. Invite a client from the client's page with Invite to
+portal. Clients sign in with a magic link that expires after 7 days. On Business, you can use your own domain
+under Settings > Client portal > Custom domain.
+"""
+
+[[article]]
+id = "kb26"
+title = "Invoice emails not arriving"
+body = """
+Invoice emails come from invoices@tallyline.com. Ask the client to check spam and add that address to their
+safe senders list. Every invoice's Activity tab shows whether the email was delivered, opened, or bounced. On
+Business you can send from your own domain after adding the SPF and DKIM records shown under Settings >
+Invoices > Sender domain.
+"""
+
+[[article]]
+id = "kb27"
+title = "Import clients or time entries from CSV"
+body = """
+Go to Settings > Data > Import, pick Clients or Time entries, and download the CSV template. Dates must be
+YYYY-MM-DD and each file can have up to 10,000 rows. The preview shows errors by row before anything is saved.
+Imports can't be undone, so try a small file first.
+"""
+
+[[article]]
+id = "kb28"
+title = "Export all your data"
+body = """
+Owners and admins can export everything under Settings > Data > Export all data. We email a link to a ZIP
+of CSV files within 24 hours; the link works for 7 days. Single reports can be exported to CSV or PDF from
+the report page.
+"""
+
+[[article]]
+id = "kb29"
+title = "Tallyline mobile app"
+body = """
+The app is free for iOS 16 or later and Android 11 or later. You can run timers, log time and expenses, and
+view invoices. Timers keep running offline and sync when you reconnect. If the app won't sign in, update it
+to the latest version, then sign out and back in. The app can't create invoices yet.
+"""
+
+[[article]]
+id = "kb30"
+title = "Timesheet approvals"
+body = """
+Approvals are on Pro and Business. Turn them on under Settings > Time > Approvals and choose weekly or
+twice-monthly periods. Managers approve or reject from Time > Approvals. Approved time locks and can only be
+edited if a manager reopens the timesheet.
+"""
+
+[[article]]
+id = "kb31"
+title = "Reports"
+body = """
+Reports > Profitability shows revenue minus cost by client and project. Reports > Utilization shows billable
+hours as a percentage of available hours by person. Set each person's cost rate under Settings > Users so
+profitability is accurate. Every report exports to CSV or PDF.
+"""
+
+[[article]]
+id = "kb32"
+title = "Suggest a feature"
+body = """
+Share ideas at ideas.tallyline.com. Search first, since your idea may already exist, then vote for it. The
+product team reviews the top-voted ideas every quarter and posts status updates on each idea.
+"""
+
+[[article]]
+id = "kb33"
+title = "Service status"
+body = """
+Live status and incident updates are at status.tallyline.com. Click Subscribe to get email or text alerts.
+Scheduled maintenance is announced there at least 3 days ahead.
+"""
+
+[[article]]
+id = "kb34"
+title = "Expenses and mileage"
+body = """
+Log expenses under Time > Expenses, attach a receipt photo, and mark them billable to add them to the
+client's next invoice. Set your mileage rate under Settings > Time > Mileage rate; mileage entries multiply
+the distance by that rate.
+"""
