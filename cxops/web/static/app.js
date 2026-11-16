@@ -96,18 +96,19 @@ function renderResult(item) {
       <div><h3>${esc(head[1])}</h3><p>${esc(head[2])}</p></div>
     </div>
     <div class="facts">
-      <div class="fact"><span>Category</span><b>${esc(CATEGORY[r.category])}</b></div>
+      <div class="fact" data-tip="The kind of request. It decides the queue, like assignment rules in a CRM."><span>Type</span><b>${esc(CATEGORY[r.category])}</b></div>
       <div class="fact"><span>Urgency</span><b class="${r.urgency === "urgent" ? "urgent" : ""}">${esc(r.urgency)}</b></div>
       <div class="fact"><span>Queue</span><b>${esc(r.resolution === "auto" ? "None needed" : r.queue)}</b></div>
     </div>
+    ${topicBox("ticket", r.history_id, r.topic)}
     ${r.risk_flags.length ? `<div class="chips">${r.risk_flags.map((f) => `<span class="chip risk">⚑ ${esc(RISK[f] || f)}</span>`).join("")}</div>` : ""}
     ${r.reply ? `<div class="reply-head"><span>Drafted reply</span><button type="button" class="ghost small" id="copy">Copy</button></div>
       <div class="reply">${esc(r.reply)}</div>` : ""}
     ${r.article ? `<details><summary>${r.article.custom ? "Your article" : "Help article"} it used: [${esc(r.article.id)}] ${esc(r.article.title)}</summary><div class="article">${esc(r.article.body)}</div>
       <button type="button" class="ghost small" style="margin-top:8px" data-open-article="${esc(r.article.id)}">Open in Help center</button></details>` : ""}
-    ${check ? `<div class="gold"><b>Test set answer</b> (${esc(ticket.id)}): ${esc(CATEGORY[gold.category])}, ${esc(gold.urgency)},
+    ${check ? `<div class="gold"><b>Test set answer</b> (${esc(ticket.id)}): type ${esc(CATEGORY[gold.category])}, ${esc(gold.urgency)},
       ${gold.resolution === "auto" ? "answer automatically" : gold.resolution === "spam" ? "spam" : "send to " + esc(gold.queue)}.<br>
-      Category <span class="${check.catOk ? "ok" : "no"}">${check.catOk ? "matches" : "differs"}</span>,
+      Type <span class="${check.catOk ? "ok" : "no"}">${check.catOk ? "matches" : "differs"}</span>,
       decision <span class="${check.decOk ? "ok" : "no"}">${check.decOk ? "matches" : "differs"}</span>.
       ${gold.note ? `<div class="dim" style="margin-top:6px">${esc(gold.note)}</div>` : ""}</div>` : ""}
     <div class="meta">${esc(ticket.plan)} plan · ${r.seconds}s on the local model</div>`;
@@ -115,7 +116,7 @@ function renderResult(item) {
 }
 
 async function runTriage(ticket, gold) {
-  const r = await api("/api/triage", ticket);
+  const r = await api("/api/triage", { ...ticket, test_id: gold ? ticket.id : "" });
   const item = { ticket, r, gold, n: history.length + 1 };
   history.push(item);
   selected = item;
@@ -173,6 +174,7 @@ function renderBoard(fresh) {
       const c = goldCheck(h.r, h.gold), miss = c && !(c.catOk && c.decOk);
       return `<button type="button" class="tcard${h === fresh ? " new" : ""}${h === selected ? " selected" : ""}" data-n="${h.n}">
         <b>${esc(h.ticket.subject || h.ticket.body)}</b>
+        <span class="sub"><span>${esc(h.r.topic?.name || "")}</span></span>
         <span class="sub"><span>${esc(h.ticket.plan)}</span><span class="${h.r.urgency === "urgent" ? "urgent" : ""}">${esc(h.r.urgency)}</span>
         ${c ? `<span class="${miss ? "miss" : ""}">${miss ? "≠ test answer" : "✓ test answer"}</span>` : ""}</span></button>`;
     }).join("") || `<p class="dim small" style="margin:4px">Empty</p>`}</div>`;
@@ -211,7 +213,7 @@ $("#comment-form").addEventListener("submit", async (e) => {
         <span class="flag ${t.follow_up ? "yes" : "no"}">${t.follow_up ? "⚑ Follow up with this customer" : "No follow-up needed"}</span>
         <span class="chip">${esc(t.segment)}</span><span class="chip">${esc(t.sentiment)}</span>
         ${t.themes.map((x) => `<span class="chip">${esc(THEME[x] || x)}</span>`).join("") || `<span class="dim small">no specific themes</span>`}
-      </div><p class="dim small" style="margin:8px 0 0">${esc(t.reason)} · ${t.seconds}s</p>`;
+      </div><p class="dim small" style="margin:8px 0 12px">${esc(t.reason)} · ${t.seconds}s</p>${topicBox("response", t.history_id, t.topic)}`;
   } catch (err) { out.innerHTML = `<p class="error">${esc(err.message)}</p>`; }
   finally { $("#comment-btn").disabled = false; }
 });
@@ -225,7 +227,7 @@ $("#survey-btn").addEventListener("click", async () => {
     while (s.state === "running") {
       const pct = s.total ? (100 * s.done) / s.total : 0;
       $(".progress-fill", prog).style.width = `${s.step === "Writing the summary" ? 100 : pct}%`;
-      $("span", prog).textContent = s.step === "Writing the summary" ? "Writing the summary…" : `Tagging comments: ${s.done} of ${s.total || "…"}`;
+      $("span", prog).textContent = s.step === "Writing the summary" ? "Writing the summary…" : `${s.step || "Working"}: ${s.done} of ${s.total || "…"}`;
       await new Promise((r) => setTimeout(r, 600));
       s = await api("/api/survey");
     }
@@ -276,7 +278,8 @@ function renderReport(rep, scroll = true) {
   $("#fu-count").textContent = `· ${stats.follow_up_count}, lowest score first`;
   $("#followups tbody").innerHTML = stats.follow_up.map((f) => `<tr>
       <td class="score"><span class="pill" style="background:${segColor(f.score)}">${f.score}</span></td><td>${esc(f.plan)}</td>
-      <td>${esc(f.comment)}</td><td class="why">${esc(f.why)}</td></tr>`).join("");
+      <td>${esc(f.comment)}</td><td class="why">${esc(f.why)}</td>
+      <td>${f.history_id ? topicSelect("response", f.history_id, f.topic) : ""}</td></tr>`).join("");
   if (scroll) $("#report").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -465,6 +468,308 @@ document.addEventListener("click", async (e) => {
     showTab("tab-triage"); form.requestSubmit();
   }
 });
+
+/* ---------------- Category > Topic picklist (shared by every view) */
+let TAX = null;
+async function loadTax() { TAX = await api("/api/taxonomy"); return TAX; }
+const allTopics = () => (TAX ? TAX.categories.flatMap((c) => c.topics.map((t) => ({ ...t, category: c.name }))) : []);
+
+function topicSelect(kind, hid, topic) {
+  if (!TAX || !hid) return esc(topic?.name || "");
+  const current = topic?.id;
+  const groups = TAX.categories.map((c) => {
+    const opts = c.topics.filter((t) => t.active || t.id === current)
+      .map((t) => `<option value="${esc(t.id)}"${t.id === current ? " selected" : ""}>${esc(t.name)}${t.active ? "" : " (retired)"}</option>`).join("");
+    return opts ? `<optgroup label="${esc(c.name)}">${opts}</optgroup>` : "";
+  }).join("");
+  return `<select data-topic-kind="${kind}" data-hid="${hid}" aria-label="Topic">${groups}</select>`;
+}
+function topicBox(kind, hid, topic) {
+  if (!topic) return "";
+  return `<div class="topicbox" data-topicbox="${kind}-${hid}">
+    <span class="lbl">Category</span><span class="cat">${esc(topic.category)}</span>
+    <span class="lbl">Topic</span>${topicSelect(kind, hid, topic)}
+    <span class="by ${topic.by === "you" ? "you" : ""}">${topic.by === "you" ? "Set by you" : "AI suggested"}</span></div>`;
+}
+document.addEventListener("change", async (e) => {
+  const sel = e.target.closest("select[data-topic-kind]");
+  if (!sel) return;
+  try {
+    const { topic } = await api("/api/topic", { kind: sel.dataset.topicKind, id: +sel.dataset.hid, topic_id: sel.value });
+    const box = sel.closest(".topicbox");
+    if (box) { $(".cat", box).textContent = topic.category; const by = $(".by", box); by.textContent = "Set by you"; by.classList.add("you"); }
+    // keep the in-memory copies in sync so re-renders show the new topic
+    history.filter((h) => h.r.history_id === +sel.dataset.hid && sel.dataset.topicKind === "ticket").forEach((h) => (h.r.topic = topic));
+    lastReport?.stats.follow_up.filter((f) => f.history_id === +sel.dataset.hid).forEach((f) => (f.topic = topic));
+    if (sel.dataset.topicKind === "ticket") renderBoard();
+    toast(`Filed under ${topic.category} › ${topic.name}`);
+  } catch (err) { toast(err.message); }
+});
+
+/* ---------------- Reports */
+const SPLIT_COLORS = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#0ca30c", "#9085e9", "#e66767"]; // validated on the panel
+const rep = { opts: null, saved: [], active: null, spec: { kind: "ticket", group_by: "category", split_by: "", chart: "count", filters: {} } };
+const getRepKind = segmented($("#rep-kind"), (v) => {
+  rep.spec = { kind: v, group_by: "category", split_by: "", chart: "count", filters: {} };
+  rep.active = null; renderBuilder(); runReport();
+});
+
+async function loadReports() {
+  const [opts, saved] = await Promise.all([api("/api/report-options"), api("/api/reports")]);
+  rep.opts = opts; rep.saved = saved.reports;
+  renderSaved(); renderBuilder(); runReport();
+}
+function renderSaved() {
+  const item = (r) => `<div class="rep-item${rep.active === r.id ? " active" : ""}"><button type="button" class="open" data-rep="${esc(r.id)}">${esc(r.name)}</button>
+    ${r.starter ? "" : `<button type="button" class="x" data-rep-del="${esc(r.id)}" aria-label="Delete ${esc(r.name)}">✕</button>`}</div>`;
+  const mine = rep.saved.filter((r) => !r.starter), starters = rep.saved.filter((r) => r.starter);
+  $("#rep-saved").innerHTML = `<div class="rep-group-label">Yours</div>${mine.map(item).join("") || `<p class="dim small" style="margin:2px 9px">None yet. Build one and click Save report.</p>`}
+    <div class="rep-group-label">Starters</div>${starters.map(item).join("")}`;
+  const c = rep.opts?.counts || { tickets: 0, responses: 0 };
+  $("#rep-counts").textContent = `${c.tickets} ticket${c.tickets === 1 ? "" : "s"} and ${c.responses} survey response${c.responses === 1 ? "" : "s"}, stored on this PC.`;
+}
+function options(list, value, labels, blank) {
+  return (blank ? `<option value="">${blank}</option>` : "") + list.map((v) => `<option value="${esc(v)}"${v === value ? " selected" : ""}>${esc(labels[v] || v)}</option>`).join("");
+}
+function renderBuilder() {
+  const o = rep.opts, s = rep.spec;
+  if (!o) return;
+  $$("#rep-kind button").forEach((b) => b.setAttribute("aria-checked", b.dataset.v === s.kind));
+  $("#rep-group").innerHTML = options(o.groups[s.kind], s.group_by, o.labels);
+  $("#rep-split").innerHTML = options(o.groups[s.kind].filter((g) => g !== s.group_by), s.split_by, o.labels, "None");
+  $("#rep-chart").innerHTML = options(o.charts[s.kind], s.chart, o.metric_labels);
+  $("#rep-chart").disabled = !!s.split_by;
+  $("#rep-from").value = s.filters.from || ""; $("#rep-to").value = s.filters.to || "";
+  const vals = o.values[s.kind];
+  $("#rep-filters").innerHTML = o.filters[s.kind].map((f) => {
+    const on = s.filters[f] || [];
+    const items = vals[f].map((v) => `<label><input type="checkbox" data-f="${f}" value="${esc(v)}"${on.includes(String(v)) ? " checked" : ""}>${esc(v)}</label>`).join("");
+    return `<details class="fdrop${on.length ? " on" : ""}"><summary>${esc(o.labels[f])}${on.length ? `: ${on.length === 1 ? esc(on[0]) : on.length + " selected"}` : ""}</summary>
+      <div class="menu">${items || `<p class="none">No values yet.</p>`}${on.length ? `<button type="button" class="ghost small clearf" data-clearf="${f}">Clear</button>` : ""}</div></details>`;
+  }).join("") + (Object.keys(s.filters).length ? `<button type="button" class="rep-clearall" id="rep-clearall">Clear all filters</button>` : "");
+}
+function readFilters() {
+  const f = {};
+  $$("#rep-filters input[type=checkbox]:checked").forEach((c) => (f[c.dataset.f] ||= []).push(c.value));
+  if ($("#rep-from").value) f.from = $("#rep-from").value;
+  if ($("#rep-to").value) f.to = $("#rep-to").value;
+  return f;
+}
+function specChanged(rebuild = true) {
+  const open = $("#rep-filters details[open] summary")?.textContent.split(":")[0];
+  rep.spec = { ...rep.spec, group_by: $("#rep-group").value, split_by: $("#rep-split").value, chart: $("#rep-chart").value, filters: readFilters() };
+  if (rep.spec.split_by === rep.spec.group_by) rep.spec.split_by = "";
+  if (rebuild) {
+    renderBuilder();
+    if (open) $$("#rep-filters details").find((d) => $("summary", d).textContent.startsWith(open))?.setAttribute("open", "");
+  }
+  runReport();
+}
+$("#rep-group").addEventListener("change", () => specChanged());
+$("#rep-split").addEventListener("change", () => specChanged());
+$("#rep-chart").addEventListener("change", () => specChanged());
+$("#rep-from").addEventListener("change", () => specChanged(false));
+$("#rep-to").addEventListener("change", () => specChanged(false));
+$("#rep-filters").addEventListener("change", (e) => { if (e.target.matches("input[type=checkbox]")) specChanged(); });
+$("#rep-filters").addEventListener("click", (e) => {
+  const c = e.target.closest("[data-clearf]");
+  if (c) { delete rep.spec.filters[c.dataset.clearf]; renderBuilder(); runReport(); }
+  if (e.target.id === "rep-clearall") { rep.spec.filters = {}; renderBuilder(); runReport(); }
+});
+document.addEventListener("click", (e) => {  // close filter menus when clicking elsewhere
+  $$("#rep-filters details[open]").forEach((d) => { if (!d.contains(e.target)) d.removeAttribute("open"); });
+});
+
+let repSeq = 0;
+async function runReport() {
+  const seq = ++repSeq, out = $("#rep-out");
+  try {
+    const r = await api("/api/report", { spec: rep.spec });
+    if (seq === repSeq) renderReportOut(r);
+  } catch (err) { out.innerHTML = `<p class="error">${esc(err.message)}</p>`; }
+}
+const fmt = (m, v) => (["share", "auto_rate"].includes(m) ? `${v}%` : m === "nps" && v > 0 ? `+${v}` : String(v));
+
+function renderReportOut(r) {
+  const out = $("#rep-out"), labels = r.metric_labels, s = rep.spec;
+  if (!r.rows) {
+    const none = (rep.opts.counts[s.kind === "ticket" ? "tickets" : "responses"] || 0) === 0;
+    out.innerHTML = `<div class="card rep-empty">${none
+      ? (s.kind === "ticket" ? "No tickets saved yet. Triage some on the <b>Ticket triage</b> tab (the 20 test tickets button is the fastest way), then come back."
+        : "No survey responses saved yet. Run the report on the <b>Survey insights</b> tab, or analyze a comment, then come back.")
+      : "Nothing matches these filters."}</div>`;
+    return;
+  }
+  const kpis = r.metrics.filter((m) => m !== "share" && m !== "count").map((m) => `<div class="kpi"><span>${esc(labels[m])}</span><b>${fmt(m, r.totals[m])}</b></div>`).join("");
+  let table, chart;
+  if (r.split) {
+    const cols = r.split.columns.slice(0, 8), other = r.split.columns.length > 8;
+    const colorOf = (i) => SPLIT_COLORS[i] || "#776C63";
+    const series = other ? [...cols, "Other"] : cols;
+    const cell = (row, c) => (c === "Other" ? r.split.columns.slice(8).reduce((n, k) => n + r.split.cells[row.group][k], 0) : r.split.cells[row.group][c]);
+    chart = `<div class="legend rep-legend">${series.map((c, i) => `<span><i style="background:${colorOf(i)}"></i>${esc(c)}</span>`).join("")}</div>`
+      + stackedBars(r.table.map((row) => ({ label: row.group, parts: series.map((c, i) => ({ name: c, value: cell(row, c), color: colorOf(i) })) })));
+    table = `<table><thead><tr><th>${esc(r.group_label)}</th>${r.split.columns.map((c) => `<th class="num">${esc(c)}</th>`).join("")}<th class="num">Total</th></tr></thead><tbody>
+      ${r.table.map((row) => `<tr><td>${esc(row.group)}</td>${r.split.columns.map((c) => `<td class="num">${r.split.cells[row.group][c] || ""}</td>`).join("")}<td class="num"><b>${row.count}</b></td></tr>`).join("")}
+      <tr class="total"><td>Total</td>${r.split.columns.map((c) => `<td class="num">${r.table.reduce((n, row) => n + r.split.cells[row.group][c], 0)}</td>`).join("")}<td class="num">${r.totals.count}</td></tr></tbody></table>`;
+  } else {
+    const m = s.chart;
+    chart = metricBars(r.table.map((row) => ({ label: row.group, value: row[m], text: fmt(m, row[m]), tip: `${row.group}: ${labels[m]} ${fmt(m, row[m])} (${row.count} item${row.count === 1 ? "" : "s"})` })), m === "nps");
+    table = `<table><thead><tr><th>${esc(r.group_label)}</th>${r.metrics.map((k) => `<th class="num">${esc(labels[k])}</th>`).join("")}</tr></thead><tbody>
+      ${r.table.map((row) => `<tr><td>${esc(row.group)}</td>${r.metrics.map((k) => `<td class="num">${fmt(k, row[k])}</td>`).join("")}</tr>`).join("")}
+      <tr class="total"><td>Total</td>${r.metrics.map((k) => `<td class="num">${fmt(k, r.totals[k])}</td>`).join("")}</tr></tbody></table>`;
+  }
+  const title = r.split ? `Count by ${r.group_label.toLowerCase()} and ${r.split.label.toLowerCase()}` : `${labels[s.chart]} by ${r.group_label.toLowerCase()}`;
+  out.innerHTML = `<div class="rep-kpis"><div class="kpi"><span>${s.kind === "ticket" ? "Tickets" : "Responses"}</span><b>${r.rows}</b></div>${kpis}</div>
+    <figure class="card chart rep-chart" style="margin:0"><figcaption>${esc(title)}</figcaption>${chart}</figure>
+    <section class="card"><div class="table-wrap">${table}</div></section>`;
+}
+
+/* Horizontal bars for one metric. NPS can be negative, so it gets a zero line and sign colors. */
+function metricBars(items, signed) {
+  const W = Math.max(420, Math.round($("#rep-out").clientWidth - 48)), rowH = 28, labelW = Math.min(230, W * 0.32), valW = 56;
+  const max = Math.max(1, ...items.map((d) => Math.abs(d.value))), neg = signed && items.some((d) => d.value < 0);
+  // With negatives, value labels need room on both ends: reserve a label column left of the bars too.
+  const span = W - labelW - valW * (neg ? 2 : 1) - 8, zero = labelW + (neg ? valW + span / 2 : 0), unit = (neg ? span / 2 : span) / max;
+  const rows = items.map((d, i) => {
+    const y = i * rowH + 4, w = Math.max(2, Math.abs(d.value) * unit), x = d.value < 0 ? zero - w : zero;
+    const color = signed ? (d.value >= 0 ? "var(--promoter)" : "var(--detractor)") : "var(--accent)";
+    const tx = d.value < 0 ? x - 6 : x + w + 6;
+    return `<g data-tip="${esc(d.tip)}"><rect class="hit" x="0" y="${y - 2}" width="${W}" height="${rowH}" fill="transparent"></rect>
+      <text x="${labelW - 10}" y="${y + 15}" text-anchor="end">${esc(d.label)}</text>
+      <rect class="bar" x="${x}" y="${y + 4}" width="${w}" height="16" rx="4" fill="${color}"></rect>
+      <text class="val" x="${tx}" y="${y + 15}" text-anchor="${d.value < 0 ? "end" : "start"}">${esc(d.text)}</text></g>`;
+  }).join("");
+  const zl = neg ? `<line x1="${zero}" x2="${zero}" y1="0" y2="${items.length * rowH + 6}" stroke="var(--dim)"></line>` : "";
+  return `<svg viewBox="0 0 ${W} ${items.length * rowH + 8}" role="img" aria-label="${esc(items.map((d) => d.label + " " + d.text).join(", "))}">${zl}${rows}</svg>`;
+}
+/* Stacked horizontal bars with a 2px surface gap between segments; a legend above names every color. */
+function stackedBars(items) {
+  const W = Math.max(420, Math.round($("#rep-out").clientWidth - 48)), rowH = 28, labelW = Math.min(230, W * 0.32), valW = 44;
+  const max = Math.max(1, ...items.map((d) => d.parts.reduce((n, p) => n + p.value, 0))), unit = (W - labelW - valW - 8) / max;
+  const rows = items.map((d, i) => {
+    const y = i * rowH + 4; let x = labelW; const total = d.parts.reduce((n, p) => n + p.value, 0);
+    const segs = d.parts.filter((p) => p.value).map((p) => {
+      const w = Math.max(2, p.value * unit - 2), seg = `<rect x="${x}" y="${y + 4}" width="${w}" height="16" rx="3" fill="${p.color}" data-tip="${esc(`${d.label} · ${p.name}: ${p.value}`)}"></rect>`;
+      x += p.value * unit; return seg;
+    }).join("");
+    return `<g><text x="${labelW - 10}" y="${y + 15}" text-anchor="end">${esc(d.label)}</text>${segs}
+      <text class="val" x="${x + 6}" y="${y + 15}">${total}</text></g>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${items.length * rowH + 8}" role="img" aria-label="Stacked bars">${rows}</svg>`;
+}
+
+$("#rep-saved").addEventListener("click", async (e) => {
+  const del = e.target.closest("[data-rep-del]");
+  if (del) { rep.saved = (await fetch(`/api/reports/${encodeURIComponent(del.dataset.repDel)}`, { method: "DELETE" }).then((x) => x.json())).reports;
+    if (rep.active === del.dataset.repDel) rep.active = null; renderSaved(); return; }
+  const open = e.target.closest("[data-rep]");
+  if (!open) return;
+  const r = rep.saved.find((x) => x.id === open.dataset.rep);
+  rep.active = r.id; rep.spec = JSON.parse(JSON.stringify(r.spec));
+  renderSaved(); renderBuilder(); runReport();
+});
+$("#rep-save").addEventListener("click", () => {
+  const cur = rep.saved.find((x) => x.id === rep.active && !x.starter);
+  $("#rep-savebox").hidden = false; $("#rep-name").value = cur?.name || ""; $("#rep-name").focus(); $("#rep-save-err").textContent = "";
+});
+$("#rep-save-cancel").addEventListener("click", () => ($("#rep-savebox").hidden = true));
+$("#rep-save-go").addEventListener("click", async () => {
+  try {
+    const cur = rep.saved.find((x) => x.id === rep.active && !x.starter && x.name === $("#rep-name").value.trim());
+    const item = await api("/api/reports", { name: $("#rep-name").value, spec: rep.spec, id: cur?.id });
+    rep.saved = (await api("/api/reports")).reports; rep.active = item.id;
+    $("#rep-savebox").hidden = true; renderSaved(); toast(`Saved “${item.name}”`);
+  } catch (err) { $("#rep-save-err").textContent = err.message; }
+});
+$("#rep-name").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#rep-save-go").click(); });
+$("#rep-export").addEventListener("click", async () => {
+  const btn = $("#rep-export"); btn.disabled = true; btn.textContent = "Exporting…";
+  try {
+    const name = rep.saved.find((x) => x.id === rep.active)?.name || "";
+    const x = await api("/api/export", { spec: rep.spec, name });
+    $("#rep-out").insertAdjacentHTML("afterbegin", `<div class="card export-note">✓ Exported <b>${esc(x.name)}</b>
+      <button type="button" class="primary small-btn" data-open-file="${esc(x.path)}">Open in Excel</button>
+      <button type="button" class="ghost small" data-open-folder="${esc(x.path)}">Show in folder</button><code>${esc(x.folder)}</code></div>`);
+  } catch (err) { toast(err.message); }
+  finally { btn.disabled = false; btn.textContent = "Export to Excel"; }
+});
+document.addEventListener("click", (e) => {
+  const f = e.target.closest("[data-open-file], [data-open-folder]");
+  if (f) api("/api/open", { path: f.dataset.openFile || f.dataset.openFolder, folder: !!f.dataset.openFolder }).catch((err) => toast(err.message));
+});
+$("#rep-clear").addEventListener("click", () => ($("#rep-clear-confirm").hidden = false));
+$("#rep-clear-no").addEventListener("click", () => ($("#rep-clear-confirm").hidden = true));
+$$("[data-clear]").forEach((b) => b.addEventListener("click", async () => {
+  await api("/api/history/clear", { kind: b.dataset.clear });
+  $("#rep-clear-confirm").hidden = true; await loadReports(); toast("History cleared");
+}));
+$("#tab-reports").addEventListener("click", () => loadReports().catch((e) => ($("#rep-out").innerHTML = `<p class="error">${esc(e.message)}</p>`)));
+
+/* ---------------- Categories editor */
+let taxDraft = null;
+const taxDirty = () => JSON.stringify(taxDraft) !== JSON.stringify(TAX && { categories: TAX.categories });
+function setTaxDirty() {
+  const d = taxDirty();
+  $(".tax-bar").classList.toggle("dirty", d);
+  $("#tax-status").textContent = d ? "Unsaved changes" : "No unsaved changes";
+  $("#tax-save").disabled = $("#tax-discard").disabled = !d;
+}
+function renderTax() {
+  const cats = taxDraft.categories, names = cats.map((c) => c.name);
+  $("#tax-cats").innerHTML = cats.map((c, ci) => `<div class="card tax-cat">
+    <div class="head"><input value="${esc(c.name)}" data-cat="${ci}" aria-label="Category name">
+      ${c.topics.length ? "" : `<button type="button" class="iconbtn" data-del-cat="${ci}">Remove</button>`}</div>
+    ${c.topics.map((t, ti) => `<div class="tax-topic${t.active ? "" : " retired"}">
+      <input value="${esc(t.name)}" data-topic="${ci}.${ti}" aria-label="Topic name">
+      <select data-move="${ci}.${ti}" aria-label="Move to category">${names.map((n, k) => `<option value="${k}"${k === ci ? " selected" : ""}>${esc(n)}</option>`).join("")}</select>
+      ${t.isNew ? `<button type="button" class="iconbtn" data-del-topic="${ci}.${ti}">Remove</button>`
+        : `<button type="button" class="iconbtn" data-retire="${ci}.${ti}">${t.active ? "Retire" : "Restore"}</button>`}
+    </div>`).join("")}
+    <button type="button" class="ghost small tax-add" data-add-topic="${ci}">+ Topic</button></div>`).join("");
+  setTaxDirty();
+}
+async function loadTaxEditor() {
+  await loadTax();
+  taxDraft = JSON.parse(JSON.stringify({ categories: TAX.categories }));
+  $("#tax-err").textContent = ""; renderTax();
+}
+const at = (s) => s.split(".").map(Number);
+$("#tax-cats").addEventListener("input", (e) => {
+  if (e.target.dataset.cat !== undefined) taxDraft.categories[+e.target.dataset.cat].name = e.target.value;
+  if (e.target.dataset.topic) { const [c, t] = at(e.target.dataset.topic); taxDraft.categories[c].topics[t].name = e.target.value; }
+  setTaxDirty();
+});
+$("#tax-cats").addEventListener("change", (e) => {
+  if (!e.target.dataset.move) return;
+  const [c, t] = at(e.target.dataset.move), to = +e.target.value;
+  const [topic] = taxDraft.categories[c].topics.splice(t, 1);
+  taxDraft.categories[to].topics.push(topic); renderTax();
+});
+$("#tax-cats").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  if (d.addTopic !== undefined) { taxDraft.categories[+d.addTopic].topics.push({ id: "", name: "New topic", active: true, isNew: true }); renderTax();
+    $$(`[data-topic^="${d.addTopic}."]`).pop()?.select(); }
+  if (d.delTopic) { const [c, t] = at(d.delTopic); taxDraft.categories[c].topics.splice(t, 1); renderTax(); }
+  if (d.retire) { const [c, t] = at(d.retire); const tp = taxDraft.categories[c].topics[t]; tp.active = !tp.active; renderTax(); }
+  if (d.delCat !== undefined) { taxDraft.categories.splice(+d.delCat, 1); renderTax(); }
+});
+$("#tax-add-cat").addEventListener("click", () => {
+  taxDraft.categories.push({ name: "New category", topics: [] }); renderTax();
+  $$("[data-cat]").pop()?.select();
+});
+$("#tax-discard").addEventListener("click", () => loadTaxEditor());
+$("#tax-save").addEventListener("click", async () => {
+  try {
+    const clean = { categories: taxDraft.categories.map((c) => ({ name: c.name, topics: c.topics.map(({ isNew, ...t }) => t) })) };
+    TAX = await api("/api/taxonomy", clean);
+    taxDraft = JSON.parse(JSON.stringify({ categories: TAX.categories }));
+    $("#tax-err").textContent = ""; renderTax(); toast("Categories saved. New items use them right away.");
+  } catch (err) { $("#tax-err").textContent = err.message; }
+});
+$("#tab-tax").addEventListener("click", () => { if (!taxDraft || !taxDirty()) loadTaxEditor().catch((e) => ($("#tax-err").textContent = e.message)); });
+loadTax().catch(() => {});
 
 /* ---------------- shared hover tooltip for any [data-tip] */
 const tip = $("#tooltip");

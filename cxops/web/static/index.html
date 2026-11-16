@@ -14,6 +14,8 @@
       <button role="tab" id="tab-triage" aria-controls="view-triage" aria-selected="true">Ticket triage</button>
       <button role="tab" id="tab-survey" aria-controls="view-survey" aria-selected="false">Survey insights</button>
       <button role="tab" id="tab-kb" aria-controls="view-kb" aria-selected="false">Help center</button>
+      <button role="tab" id="tab-reports" aria-controls="view-reports" aria-selected="false">Reports</button>
+      <button role="tab" id="tab-tax" aria-controls="view-tax" aria-selected="false">Categories</button>
     </nav>
     <span id="model-status" class="status" role="status">Starting the model…</span>
   </header>
@@ -130,7 +132,7 @@
       </section>
       <section class="card">
         <h2>Follow up with these customers <span class="dim small" id="fu-count"></span></h2>
-        <div class="table-wrap"><table id="followups"><thead><tr><th>Score</th><th>Plan</th><th>Comment</th><th>Why flagged</th></tr></thead><tbody></tbody></table></div>
+        <div class="table-wrap"><table id="followups"><thead><tr><th>Score</th><th>Plan</th><th>Comment</th><th>Why flagged</th><th>Topic</th></tr></thead><tbody></tbody></table></div>
       </section>
     </div>
   </main>
@@ -161,6 +163,85 @@
 
       <section id="kb-detail" class="card kb-detail" aria-live="polite"></section>
     </div>
+  </main>
+
+  <!-- ===================== Reports ===================== -->
+  <main id="view-reports" role="tabpanel" aria-labelledby="tab-reports" hidden>
+    <section class="intro">
+      <h1>Reports</h1>
+      <p>Every ticket you triage and every survey response you analyze is saved on this PC with its Category and Topic.
+        Build a report, save it, or export it to Excel.</p>
+    </section>
+    <div class="rep-grid">
+      <aside class="card rep-side">
+        <h2>Saved reports</h2>
+        <div id="rep-saved" class="rep-saved"></div>
+        <div class="rep-history">
+          <h3>Saved history</h3>
+          <p id="rep-counts" class="dim small"></p>
+          <div class="actions"><button type="button" class="ghost small" id="rep-clear">Clear history…</button></div>
+          <div id="rep-clear-confirm" hidden class="tipbox">
+            Clear which saved items? This can't be undone.
+            <div class="actions">
+              <button type="button" class="danger small-btn" data-clear="ticket">Tickets</button>
+              <button type="button" class="danger small-btn" data-clear="response">Survey responses</button>
+              <button type="button" class="danger small-btn" data-clear="">Both</button>
+              <button type="button" class="ghost small" id="rep-clear-no">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="card rep-builder">
+          <div class="row-between">
+            <div class="seg" id="rep-kind" role="radiogroup" aria-label="Data">
+              <button type="button" role="radio" aria-checked="true" data-v="ticket">Tickets</button>
+              <button type="button" role="radio" aria-checked="false" data-v="response">Survey responses</button>
+            </div>
+            <div class="rep-actions">
+              <button type="button" class="ghost" id="rep-save">Save report…</button>
+              <button type="button" class="primary" id="rep-export">Export to Excel</button>
+            </div>
+          </div>
+          <div class="rep-fields">
+            <div><label for="rep-group">Group by</label><select id="rep-group"></select></div>
+            <div><label for="rep-split">Split by</label><select id="rep-split"></select></div>
+            <div><label for="rep-chart">Chart</label><select id="rep-chart"></select></div>
+            <div><label for="rep-from">From</label><input type="date" id="rep-from"></div>
+            <div><label for="rep-to">To</label><input type="date" id="rep-to"></div>
+          </div>
+          <label>Filters</label>
+          <div id="rep-filters" class="rep-filters"></div>
+          <div id="rep-savebox" class="rep-savebox" hidden>
+            <input id="rep-name" maxlength="80" placeholder="Report name">
+            <button type="button" class="primary" id="rep-save-go">Save</button>
+            <button type="button" class="ghost" id="rep-save-cancel">Cancel</button>
+            <span id="rep-save-err" class="error small"></span>
+          </div>
+        </div>
+        <div id="rep-out" class="rep-out"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===================== Categories ===================== -->
+  <main id="view-tax" role="tabpanel" aria-labelledby="tab-tax" hidden>
+    <section class="intro">
+      <h1>Categories &amp; topics</h1>
+      <p>The picklist every ticket and survey response is filed under. The AI suggests a topic from the active ones, and you can
+        change any item's topic. Topics that have been used can't be deleted, only retired, so past reports keep their labels.</p>
+    </section>
+    <div class="tax-bar card">
+      <span id="tax-status" class="dim small">No unsaved changes</span>
+      <div class="rep-actions">
+        <button type="button" class="ghost" id="tax-add-cat">+ Category</button>
+        <button type="button" class="ghost" id="tax-discard" disabled>Discard changes</button>
+        <button type="button" class="primary" id="tax-save" disabled>Save changes</button>
+      </div>
+    </div>
+    <p id="tax-err" class="error"></p>
+    <div id="tax-cats" class="tax-cats"></div>
   </main>
 
   <div id="tooltip" class="tooltip" hidden></div>

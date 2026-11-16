@@ -120,6 +120,12 @@ cxops/       triage.py, voc.py, data.py (loaders, validation, routing table), ll
              The app has a Help center tab: browse and search the 34 articles, see which test tickets each
              answers, and write your own. Your articles are saved to %LOCALAPPDATA%\cx-ops-ai\my-articles.json
              and used by the app's triage, never by the scored tests.
+             taxonomy.py: the shared Category > Topic picklist (editable on the Categories tab; topics are
+             retired, never deleted). The model suggests a topic in its own step, so the scored pipelines
+             don't change; a person can override it.
+             history.py + reports.py: every ticket and survey response the app processes is saved locally
+             (SQLite), and the Reports tab groups, splits, filters, saves, and exports it to Excel (.xlsx with
+             Report, Data, and About sheets, in Documents\CX Ops AI exports).
 assets/      icon (VectorCraft PNGs packed by make_icon.py) · launcher/ the .exe source
 data/        kb/ help center · tickets/ · surveys/ · LABELING.md
 evals/       triage_eval.py, voc_eval.py (results/ is gitignored)
