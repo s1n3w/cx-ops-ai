@@ -98,6 +98,9 @@ main { max-width: 1240px; margin: 0 auto; padding: 28px 32px 64px; }
 .placeholder img { opacity: .5; margin-bottom: 6px; }
 .result.loading { opacity: .6; }
 
+.tquote { margin-bottom: 12px; padding: 0 2px 12px; border-bottom: 1px solid var(--line); }
+.tquote b { display: block; font-size: 15px; margin: 2px 0 3px; }
+.tquote p { margin: 0; color: var(--dim); font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .decision { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; margin-bottom: 14px; background: var(--raised); border-left: 4px solid var(--dim); }
 .decision .icon { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--frame); flex: none; }
 .decision.auto { border-color: var(--good); } .decision.auto .icon { background: var(--good); }

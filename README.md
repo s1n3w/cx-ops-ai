@@ -15,6 +15,8 @@ Everything runs on one machine (`qwen3.6:27b` via Ollama), so no customer text l
 > center, the support tickets, and the survey responses are all invented for testing. None of it comes from a
 > real business or real people.
 
+![The CX Ops AI desktop app: a test ticket answered automatically from one help article, filed under Product Quality > Mobile app, checked against the test set's answer, with the queue board below](docs/screenshot-triage.png)
+
 **The problem it addresses:** support teams spend hours on tickets the help center already answers, and
 survey comments pile up unread while unhappy customers churn. AI can help with both, but only if the team
 can trust it. That means knowing how often it's right and, more importantly, how often it does something
@@ -66,6 +68,13 @@ The model makes judgments; code applies the policy and does the math.
 3. The model writes a summary from those numbers, and a check flags any number in it that isn't in the data.
 
 See [docs/sample-voc-report.md](docs/sample-voc-report.md) for a full generated report.
+
+**Desktop app.** The tools above also run in a desktop app with five tabs: Ticket triage, Survey insights,
+Help center (browse the articles, or write your own), Reports, and Categories (the Category > Topic
+picklist every ticket and comment is filed under). Reports group, split, and filter the saved history and
+export to Excel.
+
+![The Reports tab: NPS by category for 40 survey responses, with saved and starter reports on the left](docs/screenshot-reports.png)
 
 ### Example output
 

@@ -87,6 +87,25 @@ def sample(kind: str, ticket_id: str = "") -> dict:
                      "resolution": t["resolution"], "queue": QUEUES[t["category"]], "note": t.get("note", "")}}
 
 
+def recent_tickets(day: str) -> list[dict]:
+    """Tickets triaged on a given day, shaped like live triage results, so the queue board survives a restart."""
+    out = []
+    for h in history.rows("ticket"):
+        if not h["created"].startswith(day):
+            continue
+        article = data.articles().get(h["kb_id"]) if h.get("kb_id") else None
+        gold = sample("", h["test_id"])["gold"] if h.get("test_id") else None
+        out.append({
+            "ticket": {"id": h.get("test_id") or "typed", "plan": h["plan"], "subject": h["subject"], "body": h["body"]},
+            "gold": gold,
+            "r": {"history_id": h["id"], "topic": topic_info(h["topic_id"], h.get("topic_by") or "ai"),
+                  "category": h["type"], "urgency": h["urgency"], "queue": h["queue"], "resolution": h["decision"],
+                  "risk_flags": h["risk_flags"], "reply": h["reply"] or "", "why": h["why"] or "", "seconds": h["seconds"],
+                  "article": {"id": article["id"], "title": article["title"], "body": article["body"],
+                              "custom": bool(article.get("custom"))} if article else None}})
+    return out
+
+
 def clean_spec(spec: dict) -> dict:
     """Only allow known fields into a report spec."""
     kind = "response" if spec.get("kind") == "response" else "ticket"
@@ -190,6 +209,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(reports.options())
         if url.path == "/api/reports":
             return self._json({"reports": reports.saved()})
+        if url.path == "/api/recent-tickets":
+            return self._json({"items": recent_tickets(datetime.now().strftime("%Y-%m-%d"))})
         name = "index.html" if url.path in ("/", "/index.html") else url.path.lstrip("/")
         file = (STATIC / name).resolve()
         if not file.is_file() or STATIC.resolve() not in file.parents:

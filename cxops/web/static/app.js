@@ -91,6 +91,8 @@ function renderResult(item) {
   const check = goldCheck(r, gold);
   result.className = "card result";
   result.innerHTML = `
+    <div class="tquote"><span class="dim small">${esc(ticket.plan)} plan${ticket.id && ticket.id !== "typed" ? ` · test ticket ${esc(ticket.id)}` : ""}</span>
+      <b>${esc(ticket.subject || "(no subject)")}</b><p>${esc(ticket.body)}</p></div>
     <div class="decision ${r.resolution}">
       <div class="icon" aria-hidden="true">${head[0]}</div>
       <div><h3>${esc(head[1])}</h3><p>${esc(head[2])}</p></div>
@@ -190,6 +192,15 @@ $("#board").addEventListener("click", (e) => {
 });
 $("#board-clear").addEventListener("click", () => { history.length = 0; selected = null; renderBoard(); });
 renderBoard();
+
+// Restore today's tickets from the saved history, so the board survives closing the app.
+Promise.all([api("/api/recent-tickets"), api("/api/taxonomy")]).then(([{ items }, tax]) => {
+  TAX ||= tax;  // the topic picker needs the picklist before the restored result renders
+  if (!items.length || history.length) return;
+  items.forEach((it, i) => history.push({ ...it, n: i + 1 }));
+  selected = history[history.length - 1];
+  renderResult(selected); renderBoard();
+}).catch(() => {});
 
 /* ---------------- one comment */
 let score = null;
@@ -770,6 +781,18 @@ $("#tax-save").addEventListener("click", async () => {
 });
 $("#tab-tax").addEventListener("click", () => { if (!taxDraft || !taxDirty()) loadTaxEditor().catch((e) => ($("#tax-err").textContent = e.message)); });
 loadTax().catch(() => {});
+
+// Deep links: #survey, #kb, #reports, #tax, and #reports/<saved report id> open that view directly.
+(async () => {
+  const [view, arg] = location.hash.slice(1).split("/");
+  const tab = { survey: "tab-survey", kb: "tab-kb", reports: "tab-reports", tax: "tab-tax" }[view];
+  if (!tab) return;
+  $("#" + tab).click();
+  if (view === "reports" && arg) {
+    await loadReports();
+    $(`[data-rep="${CSS.escape(arg)}"]`)?.click();
+  }
+})();
 
 /* ---------------- shared hover tooltip for any [data-tip] */
 const tip = $("#tooltip");
