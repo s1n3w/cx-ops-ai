@@ -122,9 +122,12 @@ one or two example problems), and **Recommended actions** (3 bullets, specific a
 
 def unsupported_numbers(summary: str, stats: dict) -> list[str]:
     """Numbers in the summary that don't appear anywhere in the computed stats."""
-    allowed = set(re.findall(r"-?\d+(?:\.\d+)?", json.dumps({k: v for k, v in stats.items() if k != "follow_up"})))
+    shown = {k: v for k, v in stats.items() if k != "follow_up"}
+    shown["examples"] = [f["comment"] for f in stats.get("follow_up", [])[:8]]  # the model sees these comments
+    allowed = {n.replace(",", "") for n in re.findall(r"-?\d[\d,]*(?:\.\d+)?", json.dumps(shown))}
     allowed |= {"1", "2", "3"}  # list numbering / "3 bullets"
     found = re.findall(r"(?<![\w.])[-+]?\d[\d,]*(?:\.\d+)?", summary)
+    found = [n.rstrip(",") for n in found]
     return [n for n in found if n.replace(",", "").lstrip("+") not in allowed]
 
 

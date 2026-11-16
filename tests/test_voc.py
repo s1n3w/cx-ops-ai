@@ -27,6 +27,11 @@ def test_unsupported_numbers_flags_invented_values():
     assert voc.unsupported_numbers("NPS rose 4 points to 46.", stats) == ["4", "46"]
 
 
+def test_numbers_quoted_from_example_comments_are_allowed():
+    stats = {"nps": 5, "follow_up": [{"comment": "Charged $57 instead of $19, and $1,200 is missing."}]}
+    assert voc.unsupported_numbers("One customer was charged $57 instead of $19, with $1,200 missing.", stats) == []
+
+
 def test_normalize_drops_unknown_themes():
     n = voc.normalize({"themes": ["mobile", "vibes"], "sentiment": "angry", "follow_up": "yes"})
     assert n == {"themes": ["mobile"], "sentiment": "neutral", "follow_up": False, "reason": ""}
