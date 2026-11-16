@@ -102,7 +102,8 @@ ollama pull qwen3.6:27b
 py -3.12 -m venv .venv
 .venv\Scripts\pip install -r requirements-dev.txt
 
-.venv\Scripts\python -m cxops.app          # interactive menu (or build "CX Ops AI.exe" with launcher\build.bat)
+.venv\Scripts\pythonw -m cxops.gui         # desktop app (or build "CX Ops AI.exe" with launcher\build.bat)
+.venv\Scripts\python -m cxops.app          # the same tools as a console menu
 .venv\Scripts\python -m cxops.triage "How long do password reset links last?" --plan Pro
 .venv\Scripts\python -m cxops.voc --report out/voc-report.md
 
@@ -115,6 +116,8 @@ py -3.12 -m venv .venv
 
 ```
 cxops/       triage.py, voc.py, data.py (loaders, validation, routing table), llm.py, ollama.py
+             gui.py + web/ (desktop app: local server + a Brave app-mode window), app.py (console menu)
+assets/      icon (VectorCraft PNGs packed by make_icon.py) · launcher/ the .exe source
 data/        kb/ help center · tickets/ · surveys/ · LABELING.md
 evals/       triage_eval.py, voc_eval.py (results/ is gitignored)
 tests/       escalation policy, scoring, NPS math, summary number check

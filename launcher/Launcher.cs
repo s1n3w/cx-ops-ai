@@ -1,32 +1,24 @@
-// "CX Ops AI.exe": runs the interactive app with the project's virtual environment.
-// Build with launcher\build.bat (uses the C# compiler that ships with Windows).
+// "CX Ops AI.exe": opens the desktop app (pythonw -m cxops.gui) with the project's virtual environment.
+// No console window. Build with launcher\build.bat (uses the C# compiler that ships with Windows).
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 
 class Launcher
 {
+    [STAThread]
     static int Main()
     {
         string root = AppDomain.CurrentDomain.BaseDirectory;
-        string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
-        if (!File.Exists(python))
+        string pythonw = Path.Combine(root, ".venv", "Scripts", "pythonw.exe");
+        if (!File.Exists(pythonw))
         {
-            Console.WriteLine("Can't find " + python);
-            Console.WriteLine("Set up the project first (see README: Run it). Press Enter to close.");
-            Console.ReadLine();
+            MessageBox.Show("Can't find " + pythonw + "\n\nSet up the project first (README: Run it).",
+                            "CX Ops AI", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return 1;
         }
-        var info = new ProcessStartInfo(python, "-m cxops.app") { WorkingDirectory = root, UseShellExecute = false };
-        using (var p = Process.Start(info))
-        {
-            p.WaitForExit();
-            if (p.ExitCode != 0)
-            {
-                Console.WriteLine("\nThe app stopped with an error (code " + p.ExitCode + "). Press Enter to close.");
-                Console.ReadLine();
-            }
-            return p.ExitCode;
-        }
+        Process.Start(new ProcessStartInfo(pythonw, "-m cxops.gui") { WorkingDirectory = root, UseShellExecute = false });
+        return 0;
     }
 }

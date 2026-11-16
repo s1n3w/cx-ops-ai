@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CX Ops AI</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><img src="icon.svg" alt="" width="28" height="28"><span>CX Ops AI</span></div>
+    <nav class="tabs" role="tablist" aria-label="Tools">
+      <button role="tab" id="tab-triage" aria-controls="view-triage" aria-selected="true">Ticket triage</button>
+      <button role="tab" id="tab-survey" aria-controls="view-survey" aria-selected="false">Survey insights</button>
+    </nav>
+    <span id="model-status" class="status" role="status">Starting the model…</span>
+  </header>
+
+  <!-- ===================== Ticket triage ===================== -->
+  <main id="view-triage" role="tabpanel" aria-labelledby="tab-triage">
+    <section class="intro">
+      <h1>Triage a support ticket</h1>
+      <p>The model reads the ticket and the help center, then code decides: answer it from one article,
+        send it to the right queue with a reason, or file it as spam. It never answers what a person should handle.</p>
+      <ul class="proof" aria-label="Tested accuracy">
+        <li><b>98.1%</b> right decisions</li><li><b>92 / 92</b> auto-replies correct</li>
+        <li><b>0</b> replies a person should have sent</li><li>on 160 test tickets</li>
+      </ul>
+    </section>
+
+    <div class="triage-grid">
+      <form id="ticket-form" class="card composer" autocomplete="off">
+        <div class="row-between">
+          <h2>New ticket</h2>
+          <div class="seg" id="plan" role="radiogroup" aria-label="Customer plan">
+            <button type="button" role="radio" aria-checked="false" data-v="Starter">Starter</button>
+            <button type="button" role="radio" aria-checked="true" data-v="Pro">Pro</button>
+            <button type="button" role="radio" aria-checked="false" data-v="Business">Business</button>
+          </div>
+        </div>
+        <label for="subject">Subject</label>
+        <input id="subject" maxlength="200" placeholder="QuickBooks error QBO-401">
+        <label for="body">Message</label>
+        <textarea id="body" rows="7" maxlength="4000"
+          placeholder="Invoices stopped showing up in QuickBooks Online. The integrations page shows error QBO-401. What does that mean?"></textarea>
+        <div class="actions">
+          <button type="submit" id="triage-btn" class="primary">Triage ticket</button>
+          <button type="button" id="sample-btn" class="ghost">Load a test ticket</button>
+          <span class="hint">Ctrl + Enter to triage</span>
+        </div>
+        <div class="batch">
+          <span>Fill the queue board with</span>
+          <button type="button" class="ghost small" data-batch="8">8 test tickets</button>
+          <button type="button" class="ghost small" data-batch="20">20 test tickets</button>
+          <button type="button" id="batch-stop" class="ghost small" hidden>Stop</button>
+          <span id="batch-progress" class="dim"></span>
+        </div>
+      </form>
+
+      <section id="result" class="card result empty" aria-live="polite">
+        <div class="placeholder">
+          <img src="icon.svg" alt="" width="44" height="44">
+          <p>Type a ticket or load one from the test set. The decision, routing, and any drafted reply show up here.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="board-wrap">
+      <div class="row-between">
+        <h2>Queue board <span class="dim small" id="board-count"></span></h2>
+        <button type="button" id="board-clear" class="ghost small">Clear</button>
+      </div>
+      <p class="dim small">Every ticket you triage this session lands here, the way assignment rules route cases in a CRM. Click a card to see it again.</p>
+      <div id="board" class="board"></div>
+    </section>
+  </main>
+
+  <!-- ===================== Survey insights ===================== -->
+  <main id="view-survey" role="tabpanel" aria-labelledby="tab-survey" hidden>
+    <section class="intro">
+      <h1>Survey insights</h1>
+      <p>The model tags each NPS comment by theme and sentiment and flags customers someone should call. Code computes
+        every number, and the AI summary is checked so it can't invent one.</p>
+      <ul class="proof" aria-label="Tested accuracy">
+        <li><b>96%</b> of at-risk customers flagged</li><li><b>96%</b> of flags correct</li>
+        <li><b>0</b> invented numbers</li><li>on 200 test comments</li>
+      </ul>
+    </section>
+
+    <div class="survey-grid">
+      <section class="card">
+        <h2>Run the report</h2>
+        <div class="seg" id="group" role="radiogroup" aria-label="Which responses">
+          <button type="button" role="radio" aria-checked="true" data-v="holdout">Newest 40 · ~30 s</button>
+          <button type="button" role="radio" aria-checked="false" data-v="core">All 200 · ~3 min</button>
+        </div>
+        <div class="actions">
+          <button type="button" id="survey-btn" class="primary">Analyze responses</button>
+        </div>
+        <div id="survey-progress" class="progress" hidden>
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <span class="dim small"></span>
+        </div>
+      </section>
+
+      <form id="comment-form" class="card" autocomplete="off">
+        <h2>Try one comment</h2>
+        <label>How likely to recommend? <span id="score-label" class="dim">pick 0–10</span></label>
+        <div id="score" class="scores" role="radiogroup" aria-label="Score"></div>
+        <label for="comment">Comment</label>
+        <textarea id="comment" rows="3" maxlength="2000"
+          placeholder="Support fixed our QuickBooks sync fast, but the app is slow and we may leave at renewal."></textarea>
+        <div class="actions"><button type="submit" id="comment-btn" class="primary">Analyze comment</button></div>
+        <div id="comment-result" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <div id="report" hidden>
+      <section class="kpis" id="kpis"></section>
+      <section class="charts">
+        <figure class="card chart"><figcaption>NPS by month</figcaption><div id="chart-month"></div></figure>
+        <figure class="card chart"><figcaption>NPS by plan</figcaption><div id="chart-plan"></div></figure>
+        <figure class="card chart"><figcaption>What detractors talk about <span class="dim small">(mentions)</span></figcaption><div id="chart-themes"></div></figure>
+      </section>
+      <section class="card summary">
+        <div class="row-between"><h2>AI summary for leadership</h2><span id="numcheck" class="badge"></span></div>
+        <div id="summary-text" class="md"></div>
+      </section>
+      <section class="card">
+        <h2>Follow up with these customers <span class="dim small" id="fu-count"></span></h2>
+        <div class="table-wrap"><table id="followups"><thead><tr><th>Score</th><th>Plan</th><th>Comment</th><th>Why flagged</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
