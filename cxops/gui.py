@@ -15,7 +15,7 @@ import threading
 import traceback
 from pathlib import Path
 
-from . import llm
+from . import data, llm
 from .ollama import _kill_on_close_job, ensure_running
 from .web.server import AppState, start_server
 
@@ -64,6 +64,7 @@ def open_window(url: str) -> subprocess.Popen:
 
 def main() -> None:
     APP_DIR.mkdir(exist_ok=True)
+    data.use_custom = True  # the app answers from your own articles too; the scored tests never do
     log = open(APP_DIR / "app.log", "a", encoding="utf-8", buffering=1)
     sys.stdout = sys.stderr = log  # pythonw has no console
     try:

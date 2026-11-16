@@ -132,6 +132,7 @@ MENU = [
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     os.system("title CX Ops AI")
+    data.use_custom = True  # include articles written in the desktop app; the scored tests never do
     print("CX Ops AI: support-ticket triage and survey analysis on a local model\n")
     print("Starting Ollama and loading the model (first time takes a few seconds)...", flush=True)
     with ensure_running():

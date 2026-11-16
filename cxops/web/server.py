@@ -7,6 +7,9 @@ Endpoints
   POST /api/comment  {score, plan, comment}      tag one survey comment
   POST /api/survey   {group: holdout|core}       start the survey report in the background
   GET  /api/survey                               progress, then the finished report
+  GET  /api/articles                             the help center (built-in + your own) and the test tickets each answers
+  POST /api/articles {id?, title, body}          add or update one of your own articles
+  DELETE /api/articles/<id>                      delete one of your own articles
 """
 import json
 import mimetypes
@@ -37,16 +40,29 @@ def do_triage(ticket: dict) -> dict:
     return {
         "category": t.category, "urgency": t.urgency, "queue": t.queue, "resolution": t.resolution,
         "risk_flags": t.risk_flags, "reply": t.reply, "why": t.why, "seconds": round(t.seconds, 1),
-        "article": {"id": article["id"], "title": article["title"], "body": article["body"]} if article else None,
+        "article": {"id": article["id"], "title": article["title"], "body": article["body"],
+                    "custom": bool(article.get("custom"))} if article else None,
     }
 
 
-def sample(kind: str) -> dict:
-    pool = [t for t in data.tickets() if kind in ("any", "") or t["resolution"] == kind]
-    t = random.choice(pool)
+def sample(kind: str, ticket_id: str = "") -> dict:
+    tickets = data.tickets()
+    by_id = [t for t in tickets if t["id"] == ticket_id]
+    t = by_id[0] if by_id else random.choice([t for t in tickets if kind in ("any", "") or t["resolution"] == kind])
     return {"id": t["id"], "plan": t["plan"], "subject": t["subject"], "body": t["body"],
             "gold": {"category": t["category"], "alt_category": t.get("alt_category", []), "urgency": t["urgency"],
                      "resolution": t["resolution"], "queue": QUEUES[t["category"]], "note": t.get("note", "")}}
+
+
+def list_articles() -> dict:
+    answers = {}
+    for t in data.tickets():
+        if t.get("kb_id"):
+            answers.setdefault(t["kb_id"], []).append({"id": t["id"], "subject": t["subject"]})
+    out = [{**a, "custom": False, "tickets": answers.get(a["id"], [])} for a in data.base_articles().values()]
+    out += [{**a, "tickets": []} for a in data.custom_articles().values()]
+    return {"articles": out, "max_custom": data.MAX_CUSTOM, "max_body": data.MAX_CUSTOM_BODY,
+            "custom_file": str(data.CUSTOM_FILE)}
 
 
 def run_survey(group: str) -> None:
@@ -91,9 +107,12 @@ class Handler(BaseHTTPRequestHandler):
                                "tickets": len(data.tickets()), "articles": len(data.articles()),
                                "surveys": {g: sum(r["group"] == g for r in data.surveys()) for g in ("holdout", "core")}})
         if url.path == "/api/sample":
-            return self._json(sample(parse_qs(url.query).get("kind", ["any"])[0]))
+            q = parse_qs(url.query)
+            return self._json(sample(q.get("kind", ["any"])[0], q.get("id", [""])[0]))
         if url.path == "/api/survey":
             return self._json(AppState.survey)
+        if url.path == "/api/articles":
+            return self._json(list_articles())
         name = "index.html" if url.path in ("/", "/index.html") else url.path.lstrip("/")
         file = (STATIC / name).resolve()
         if not file.is_file() or STATIC.resolve() not in file.parents:
@@ -118,6 +137,12 @@ class Handler(BaseHTTPRequestHandler):
                 with _model:
                     tags, secs = voc.tag({"score": score, "plan": p.get("plan", "Pro"), "comment": comment[:2000]})
                 return self._json({**tags, "segment": voc.segment(score), "seconds": round(secs, 1)})
+            if self.path == "/api/articles":
+                try:
+                    saved = data.save_custom_article(str(p.get("title", "")), str(p.get("body", "")), p.get("id") or None)
+                except ValueError as e:
+                    return self._json({"error": str(e)}, 400)
+                return self._json(saved)
             if self.path == "/api/survey":
                 if AppState.survey.get("state") == "running":
                     return self._json(AppState.survey)
@@ -129,6 +154,17 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             traceback.print_exc()
             self._json({"error": f"{type(e).__name__}: {e}"}, 500)
+
+
+    def do_DELETE(self):
+        prefix = "/api/articles/"
+        if not self.path.startswith(prefix):
+            return self._json({"error": "Unknown endpoint."}, 404)
+        article_id = self.path[len(prefix):]
+        if article_id not in data.custom_articles():
+            return self._json({"error": "Only your own articles can be deleted."}, 400)
+        data.delete_custom_article(article_id)
+        self._json({"deleted": article_id})
 
 
 def start_server(port: int = 0) -> ThreadingHTTPServer:

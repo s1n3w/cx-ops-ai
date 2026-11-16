@@ -117,6 +117,9 @@ py -3.12 -m venv .venv
 ```
 cxops/       triage.py, voc.py, data.py (loaders, validation, routing table), llm.py, ollama.py
              gui.py + web/ (desktop app: local server + a Brave app-mode window), app.py (console menu)
+             The app has a Help center tab: browse and search the 34 articles, see which test tickets each
+             answers, and write your own. Your articles are saved to %LOCALAPPDATA%\cx-ops-ai\my-articles.json
+             and used by the app's triage, never by the scored tests.
 assets/      icon (VectorCraft PNGs packed by make_icon.py) · launcher/ the .exe source
 data/        kb/ help center · tickets/ · surveys/ · LABELING.md
 evals/       triage_eval.py, voc_eval.py (results/ is gitignored)

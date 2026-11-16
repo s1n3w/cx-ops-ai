@@ -13,6 +13,7 @@
     <nav class="tabs" role="tablist" aria-label="Tools">
       <button role="tab" id="tab-triage" aria-controls="view-triage" aria-selected="true">Ticket triage</button>
       <button role="tab" id="tab-survey" aria-controls="view-survey" aria-selected="false">Survey insights</button>
+      <button role="tab" id="tab-kb" aria-controls="view-kb" aria-selected="false">Help center</button>
     </nav>
     <span id="model-status" class="status" role="status">Starting the model…</span>
   </header>
@@ -131,6 +132,34 @@
         <h2>Follow up with these customers <span class="dim small" id="fu-count"></span></h2>
         <div class="table-wrap"><table id="followups"><thead><tr><th>Score</th><th>Plan</th><th>Comment</th><th>Why flagged</th></tr></thead><tbody></tbody></table></div>
       </section>
+    </div>
+  </main>
+
+  <!-- ===================== Help center ===================== -->
+  <main id="view-kb" role="tabpanel" aria-labelledby="tab-kb" hidden>
+    <section class="intro">
+      <h1>Help center</h1>
+      <p>Everything the triage tool can answer from. The <b>built-in articles</b> belong to Tallyline, the made-up company the
+        tests are built around, and are read-only so the published scores stay reproducible. <b>Your articles</b> are used by the
+        app's triage right away, but never by the scored tests.</p>
+    </section>
+
+    <div class="kb-grid">
+      <aside class="card kb-list">
+        <div class="kb-tools">
+          <input id="kb-search" type="search" placeholder="Search articles…" aria-label="Search articles">
+          <button type="button" id="kb-new" class="primary">+ New article</button>
+        </div>
+        <div class="kb-filter seg" id="kb-filter" role="radiogroup" aria-label="Show">
+          <button type="button" role="radio" aria-checked="true" data-v="all">All</button>
+          <button type="button" role="radio" aria-checked="false" data-v="builtin">Built-in</button>
+          <button type="button" role="radio" aria-checked="false" data-v="custom">Yours</button>
+        </div>
+        <p id="kb-count" class="dim small"></p>
+        <div id="kb-items" class="kb-items" role="listbox" aria-label="Articles"></div>
+      </aside>
+
+      <section id="kb-detail" class="card kb-detail" aria-live="polite"></section>
     </div>
   </main>
 

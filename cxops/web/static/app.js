@@ -103,7 +103,8 @@ function renderResult(item) {
     ${r.risk_flags.length ? `<div class="chips">${r.risk_flags.map((f) => `<span class="chip risk">⚑ ${esc(RISK[f] || f)}</span>`).join("")}</div>` : ""}
     ${r.reply ? `<div class="reply-head"><span>Drafted reply</span><button type="button" class="ghost small" id="copy">Copy</button></div>
       <div class="reply">${esc(r.reply)}</div>` : ""}
-    ${r.article ? `<details><summary>Help article it used: [${esc(r.article.id)}] ${esc(r.article.title)}</summary><div class="article">${esc(r.article.body)}</div></details>` : ""}
+    ${r.article ? `<details><summary>${r.article.custom ? "Your article" : "Help article"} it used: [${esc(r.article.id)}] ${esc(r.article.title)}</summary><div class="article">${esc(r.article.body)}</div>
+      <button type="button" class="ghost small" style="margin-top:8px" data-open-article="${esc(r.article.id)}">Open in Help center</button></details>` : ""}
     ${check ? `<div class="gold"><b>Test set answer</b> (${esc(ticket.id)}): ${esc(CATEGORY[gold.category])}, ${esc(gold.urgency)},
       ${gold.resolution === "auto" ? "answer automatically" : gold.resolution === "spam" ? "spam" : "send to " + esc(gold.queue)}.<br>
       Category <span class="${check.catOk ? "ok" : "no"}">${check.catOk ? "matches" : "differs"}</span>,
@@ -334,6 +335,136 @@ function markdown(md) {
   }
   return html + (list ? "</ul>" : "");
 }
+
+/* ---------------- help center */
+const kb = { list: [], selected: null, filter: "all", maxBody: 2000, maxCustom: 25, file: "" };
+const getKbFilter = segmented($("#kb-filter"), (v) => { kb.filter = v; renderKbList(); });
+const kbSearch = $("#kb-search");
+
+function showTab(id) { $("#" + id).click(); }
+function toast(msg) {
+  const t = Object.assign(document.createElement("div"), { className: "toast", textContent: msg });
+  document.body.append(t); setTimeout(() => t.remove(), 2600);
+}
+const highlight = (text, q) => {
+  const safe = esc(text);
+  if (!q) return safe;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&/g, "&amp;")})`, "gi");
+  return safe.replace(re, "<mark>$1</mark>");
+};
+
+async function loadArticles(selectId) {
+  const r = await api("/api/articles");
+  Object.assign(kb, { list: r.articles, maxBody: r.max_body, maxCustom: r.max_custom, file: r.custom_file });
+  if (selectId !== undefined) kb.selected = selectId;
+  if (!kb.list.some((a) => a.id === kb.selected)) kb.selected = kb.list[0]?.id ?? null;
+  renderKbList();
+  if (kb.selected) renderArticle(kb.selected);
+}
+
+function kbMatches() {
+  const q = kbSearch.value.trim().toLowerCase();
+  return kb.list.filter((a) => (kb.filter === "all" || (kb.filter === "custom") === a.custom)
+    && (!q || (a.title + " " + a.body + " " + a.id).toLowerCase().includes(q)));
+}
+
+function renderKbList() {
+  const items = kbMatches(), q = kbSearch.value.trim(), mine = kb.list.filter((a) => a.custom).length;
+  $("#kb-count").textContent = `${items.length} of ${kb.list.length} articles · ${mine} of yours (up to ${kb.maxCustom})`;
+  $("#kb-items").innerHTML = items.map((a) => `
+    <button type="button" class="kb-item" role="option" aria-selected="${a.id === kb.selected}" data-id="${esc(a.id)}">
+      <b>${highlight(a.title, q)}</b>
+      <span class="sub"><code>${esc(a.id)}</code>${a.custom ? `<span class="tag mine">Yours</span>` : `<span>answers ${a.tickets.length} test ticket${a.tickets.length === 1 ? "" : "s"}</span>`}</span>
+    </button>`).join("") || `<p class="dim small" style="padding:8px">No articles match.${kb.filter !== "builtin" && !mine ? " Add your own with + New article." : ""}</p>`;
+}
+
+function renderArticle(id) {
+  const a = kb.list.find((x) => x.id === id), d = $("#kb-detail"), q = kbSearch.value.trim();
+  if (!a) { d.innerHTML = ""; return; }
+  kb.selected = id;
+  d.innerHTML = `
+    <div class="crumb"><code>${esc(a.id)}</code><span class="tag ${a.custom ? "mine" : ""}">${a.custom ? "Your article" : "Built-in · read-only"}</span></div>
+    <h2>${highlight(a.title, q)}</h2>
+    <div class="kb-body">${highlight(a.body, q)}</div>
+    ${a.custom ? `<div class="actions"><button type="button" class="ghost" id="kb-edit">Edit</button><button type="button" class="danger" id="kb-delete">Delete</button></div>
+      <div class="tipbox">The app's triage can now answer tickets from this article. Try it: write a ticket it answers on the <b>Ticket triage</b> tab.</div>`
+    : `<div class="kb-section"><h3>Test tickets this article answers (${a.tickets.length})</h3>
+      ${a.tickets.length ? `<ul class="kb-tickets">${a.tickets.map((t) => `<li><code>${esc(t.id)}</code><span>${esc(t.subject)}</span>
+        <button type="button" class="ghost small" data-try-ticket="${esc(t.id)}">Try it</button></li>`).join("")}</ul>`
+      : `<p class="dim small">None of the test tickets need this article; it's there so the tool has a realistic help center.</p>`}</div>`}`;
+  $$(".kb-item").forEach((b) => b.setAttribute("aria-selected", b.dataset.id === id));
+  $("#kb-edit")?.addEventListener("click", () => renderEditor(a));
+  $("#kb-delete")?.addEventListener("click", () => confirmDelete(a));
+}
+
+function renderEditor(a = null) {
+  const d = $("#kb-detail");
+  d.innerHTML = `<form class="editor" id="kb-form" autocomplete="off">
+      <div class="crumb">${a ? `<code>${esc(a.id)}</code>Editing your article` : "New article"}</div>
+      <label for="kb-title">Title</label>
+      <input id="kb-title" maxlength="120" value="${esc(a?.title ?? "")}" placeholder="e.g. Office hours for phone support" required>
+      <label for="kb-body">Article text</label>
+      <textarea id="kb-body" maxlength="${kb.maxBody}" placeholder="Write it the way a help article reads: what the customer should do, with the exact menu paths, numbers, and limits.">${esc(a?.body ?? "")}</textarea>
+      <div class="counter" id="kb-counter"></div>
+      <div class="actions"><button type="submit" class="primary">${a ? "Save changes" : "Add article"}</button>
+        <button type="button" class="ghost" id="kb-cancel">Cancel</button><span id="kb-err" class="error small"></span></div>
+      <div class="tipbox"><b>Tips for articles the tool can use well:</b> one topic per article; put the specific facts in the text
+        (Settings &gt; ... paths, time limits, prices, which plan has the feature). The tool only answers when one article fully
+        covers the question, and it quotes facts from it. Saved to <code>${esc(kb.file)}</code>, outside the project, so it's never published.</div>
+    </form>`;
+  const body = $("#kb-body"), counter = $("#kb-counter");
+  const count = () => { counter.textContent = `${body.value.length} / ${kb.maxBody} characters`; counter.classList.toggle("over", body.value.length >= kb.maxBody); };
+  body.addEventListener("input", count); count();
+  $("#kb-title").focus();
+  $("#kb-cancel").addEventListener("click", () => (kb.selected ? renderArticle(kb.selected) : (d.innerHTML = "")));
+  $("#kb-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const saved = await api("/api/articles", { id: a?.id, title: $("#kb-title").value, body: body.value });
+      kb.filter = "all"; $$("#kb-filter button").forEach((x) => x.setAttribute("aria-checked", x.dataset.v === "all"));
+      kbSearch.value = "";
+      await loadArticles(saved.id);
+      toast(a ? "Article saved" : "Article added. Triage can use it now.");
+    } catch (err) { $("#kb-err").textContent = err.message; }
+  });
+}
+
+function confirmDelete(a) {
+  const d = $("#kb-detail");
+  d.insertAdjacentHTML("beforeend", `<div class="tipbox" id="kb-confirm">Delete <b>${esc(a.title)}</b>? This can't be undone.
+    <div class="actions"><button type="button" class="danger" id="kb-yes">Delete it</button><button type="button" class="ghost" id="kb-no">Keep it</button></div></div>`);
+  $("#kb-delete").disabled = true;
+  $("#kb-no").addEventListener("click", () => renderArticle(a.id));
+  $("#kb-yes").addEventListener("click", async () => {
+    try { await fetch(`/api/articles/${encodeURIComponent(a.id)}`, { method: "DELETE" }); await loadArticles(null); toast("Article deleted"); }
+    catch (err) { toast(err.message); }
+  });
+}
+
+$("#kb-items").addEventListener("click", (e) => { const b = e.target.closest(".kb-item"); if (b) renderArticle(b.dataset.id); });
+kbSearch.addEventListener("input", () => { renderKbList(); if (kb.selected) renderArticle(kb.selected); });
+$("#kb-new").addEventListener("click", () => {
+  if (kb.list.filter((a) => a.custom).length >= kb.maxCustom) return toast(`You can add up to ${kb.maxCustom} articles.`);
+  $$(".kb-item").forEach((b) => b.setAttribute("aria-selected", false));
+  renderEditor();
+});
+$("#tab-kb").addEventListener("click", () => { if (!kb.list.length) loadArticles().catch((e) => ($("#kb-detail").innerHTML = `<p class="error">${esc(e.message)}</p>`)); });
+
+// Cross-links: "Open in Help center" from a triage result, and "Try it" from an article's test tickets.
+document.addEventListener("click", async (e) => {
+  const open = e.target.closest("[data-open-article]");
+  if (open) {
+    showTab("tab-kb"); kbSearch.value = "";
+    await loadArticles(open.dataset.openArticle);
+    return;
+  }
+  const tryIt = e.target.closest("[data-try-ticket]");
+  if (tryIt) {
+    const t = await api("/api/sample?id=" + encodeURIComponent(tryIt.dataset.tryTicket));
+    loaded = t; subject.value = t.subject; body.value = t.body; setPlan(t.plan);
+    showTab("tab-triage"); form.requestSubmit();
+  }
+});
 
 /* ---------------- shared hover tooltip for any [data-tip] */
 const tip = $("#tooltip");
